@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block site_header %}{{ site_header }}{% endblock %}
+{% block style %}
+    {{ super() }}
+    .article_text{
+        margin: auto auto 2em auto;
+    }
+    .button.rmore{
+        margin: auto auto 2em auto;
+    }
+    .button.prev,
+    .button.nxt {
+        margin: 2em auto;
+    }
+{% endblock %}
+{% block content %}
+    <div class="ui container clearing basic text segment" id="main_space">
+        <div class="left ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 277px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <div class="right ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 1359px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        {% for article in articles %}
+            <div class="ui padded raised clearing segment">
+                <h2 class="ui header">{{ article.title }}</h2>
+                <hr class="ui divider"/>
+                <p class="article_text">{{ article.article_text|safe }}</p>
+                <a class="ui right floated basic tiny primary button rmore" href="{{ article.article_url }}">Read more</a>
+                <div class="ui bottom attached label">{{ article.published_date }}</div>
+            </div>
+        {% endfor %}
+        {% if previous_page %}
+            <a class="ui left floated labeled icon button prev" href="{{ previous_page }}"><i class="angle left icon"></i>Previous</a>
+        {% endif %}
+        {% if next_page %}
+            <a class="ui right floated right labeled icon button nxt" href="{{ next_page }}">Next<i class="angle right icon"></i></a>
+        {% endif %}
+    </div>
+{% endblock %}

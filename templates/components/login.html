@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block site_header %}{{ site_header }}{% endblock %}
+{% block content %}
+    <div class="ui container raised padded clearing segment" id="main_space">
+        <div class="left ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 277px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <div class="right ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 1359px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <h1 class="ui header">Login</h1>
+        <div class="ui divider"></div>
+        <form class="ui form login" method="POST">
+            <div class="field">
+            <label>Email</label>
+            <input type="email" name="user_email" placeholder="Email" required/>
+            </div>
+            <div class="field">
+            <label>Password</label>
+            <input type="password" name="passwd" placeholder="Password" required/>
+            </div>
+            <button class="ui button" id="login_s">Submit</button>
+        </form>
+    </div>
+
+
+     <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/custom_js/c_login.js') }}"></script>
+{% endblock %}

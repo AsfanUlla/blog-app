@@ -1,0 +1,133 @@
+{% extends "index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block site_header %}{{ site_header }}{% endblock %}
+{% block nav_items %}
+    {{ super() }}
+    <a href="/admin/logout" class="item">Logout</a>
+{% endblock %}
+{% block content %}
+    <div class="ui container raised padded clearing segment" id="main_space">
+        <table class="ui compact celled definition table">
+            <thead>
+                <tr>
+                {% for keys in users[0] %}
+                    {% if keys == '_id' %}
+                        <th>Actions</th>
+                    {% else %}
+                        <th>{{ keys|upper }}</th>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        {% for key, value in user.items() %}
+                            {% if key == "_id" %}
+                                <td class="collapsing">
+                                    <div class="ui small basic icon buttons">
+                                        <button class="ui button"><i class="edit icon"></i></button>
+                                        <button class="ui button"><i class="trash icon"></i></button>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td> {{ value }} </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="full-width">
+                <tr>
+                    <th colspan="8">
+                        <div class="ui right floated small primary labeled icon button">
+                            <i class="user icon"></i> Add User
+                        </div>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="ui container raised padded clearing segment" id="main_space">
+        <table class="ui compact celled definition table">
+            <thead>
+                <tr>
+                    {% for keys in hosts[0] %}
+                        {% if keys == '_id' %}
+                            <th>Actions</th>
+                        {% else %}
+                            <th>{{ keys|upper }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for host in hosts %}
+                    <tr>
+                        {% for key, value in host.items() %}
+                            {% if key == "_id" %}
+                                <td class="collapsing">
+                                    <div class="ui small basic icon buttons">
+                                        <button class="ui button host_edit"><i class="edit icon"></i></button>
+                                        <button class="ui button host_trash"><i class="trash icon"></i></button>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td> {{ value|lower|trim }} </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="full-width">
+                <tr>
+                    <th colspan="4">
+                        <div class="ui right floated small primary labeled icon button addhost">
+                            <i class="linkify icon"></i> Add Host
+                        </div>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- host Model Form-->
+    <div class="ui small basic hform modal">
+        <div class="ui header">
+            Add/Edit Host
+        </div>
+        <div class="content">
+            <form class="ui form host" method="POST">
+                <div class="field">
+                    <div class="ui labeled input">
+                        <div class="ui label">
+                            Host Name *
+                        </div>
+                        <input type="text" name="host" placeholder="http://domain.com" required />
+                    </div>
+                </div>
+                <div class="inline field">
+                    <div class="ui toggle checkbox">
+                      <input type="checkbox" tabindex="0" name="enabled" class="hidden">
+                      <label>Enable</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <button class="ui red basic cancel button">
+                <i class="remove icon"></i>
+                Cancel
+            </button>
+            <button class="ui green basic ok button" type="submit" value="hostinfo">
+                <i class="checkmark icon"></i>
+                Submit
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/custom_js/c_admin.js') }}"></script>
+
+{% endblock %}}

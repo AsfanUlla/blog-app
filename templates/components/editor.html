@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block site_header %}{{ site_header }}{% endblock %}
+{% block nav_items %}
+    {{ super() }}
+    <a href="/admin" class="item">Admin</a>
+    <a href="/admin/logout" class="item">Logout</a>
+{% endblock %}
+{% block style %}
+    {{ super() }}
+    #editorjs{
+        margin-top: 2em; 
+        margin-bottom: 2em;
+        border-radius: 5px;
+        border: 3px solid #eee;
+    }
+{% endblock %}
+{% block content %}
+    <div class="ui container raised padded clearing segment" id="main_space">
+        <div class="left ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 277px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <div class="right ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 1359px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <h1 class="ui header">{{ self.title() }}</h1>
+        <div class="ui divider"></div>
+        <form class="ui form editor" method="POST">
+            <div class="field">
+                <div class="ui huge labeled fluid input">
+                    <div class="ui label">
+                        Title
+                    </div>
+                    <input type="text" name="title" id="title" required/>
+                </div>
+            </div>
+            <div id="editorjs" class="ui raised"></div>
+            <div class="field">
+                <select name="hosts" id="hosts" multiple="multiple" class="ui selection dropdown">
+                    <option value="">Select Article Host</option>
+                    {% for host in hosts %}
+                        <option value="{{ host }}">{{ host }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label>Tags: Add multiple tags with " , "</label>
+                <textarea rows="2" name="tags" id="tags" placeholder="TAG1,TAG2"></textarea>
+            </div>
+            <div class="ui equal width stackable grid" style="margin-top: 1em;">
+                <div class="left floated column">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="public"/>
+                            <label>Publish</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="right floated column">
+                    <button class="ui right floated primary button" id="e_save">Save</button>
+                    <button class="ui right floated secondary button" id="e_discard">Discard</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="{{ url_for('static', path='/seui/editorjs/editor.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/header.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/list.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/inline-code.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/code.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/paragraph.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/embed.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/marker.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/warning.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/image.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/raw.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/quote.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/checklist.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/delimiter.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/table.js') }}"></script>
+    <script src="{{ url_for('static', path='/seui/editorjs/underline.js') }}"></script>
+
+    <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
+    <script>
+        //$(document).ready(function() {
+            var article_doc = {{ article_doc|tojson }};
+        //});
+    </script>
+    <script src="{{ url_for('static', path='/seui/custom_js/c_editor.js') }}"></script>
+
+{% endblock %}

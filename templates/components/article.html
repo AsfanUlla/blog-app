@@ -1,0 +1,160 @@
+{% extends "index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/seui/highlight/styles/base16/3024.min.css') }}">
+    <script src="{{ url_for('static', path='/seui/highlight/highlight.min.js') }}"></script>
+{% endblock %}
+{% block style %}
+    {{ super() }}
+    .header_link{
+        color: grey;
+        font-weight: lighter;
+    }
+{% endblock %}
+
+{% block site_header %}{{ site_header }}{% endblock %}
+{% block content %}
+    <div class="ui container raised padded clearing text segment" id="main_space">
+        <div class="left ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 277px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <div class="right ui rail">
+            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 1359px;">
+            <h3 class="ui header">Ad space</h3>
+            <img>
+            </div>
+        </div>
+        <h1 class="ui header">{{ self.title() }}</h1>
+        <div class="ui divider"></div>
+        {% for seg in data.blocks %}
+            {% if seg.type == "header" %}
+                    <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
+                    <a class="header_link" href="#{{ seg.data.text|jslug }}">
+                        &nbsp;<i class="linkify icon"></i>
+                    </a>
+                    </h{{ seg.data.level }}>
+            {% elif seg.type == "paragraph" %}
+                <p>{{ seg.data.text|safe }}</p>
+            {% elif seg.type == "warning" %}
+                <div class="ui small warning message">
+                    <div class="header">
+                        {{ seg.data.title }}
+                    </div>
+                    <p>{{ seg.data.message|safe }}</p>
+                </div>
+            {% elif seg.type == "code" %}
+                <pre>
+                    <code>
+                        {{ seg.data.code|trim }}
+                    </code>
+                </pre>
+            {% elif seg.type == "delimiter" %}
+                <div class="ui divider"></div>
+            {% elif seg.type == "raw" %}
+                {{ seg.data.html|safe }}
+            {% elif seg.type == "quote" %}
+                <div class="ui small message">
+                    <p>{{ seg.data.text|safe }}</p>
+                    <h4 class="ui right aligned header">
+                        - {{ seg.data.caption|safe }}
+                    </h4>
+                </div>
+            {% elif seg.type == "image" %}
+                <div class="ui vertical segment">
+                    <img class="ui rounded image" src="{{ seg.data.file.url }}">
+                    <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                </div>
+            {% elif seg.type == "checklist" %}
+                {% for citem in seg.data["items"] %}
+                    <div class="ui list">
+                        <div class="item">
+                            {% if citem.checked %}
+                                <i class="check circle icon"></i>
+                            {% else %}
+                                <i class="circle outline icon"></i>
+                            {% endif %}
+                            {{ citem.text }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% elif seg.type == "list" %}
+                {% if seg.data.style == "ordered" %}
+                    {% set ls = "ol" %}
+                {% else %}
+                    {% set ls = "ul" %}
+                {% endif %}
+                <{{ ls }} class="ui list">
+                    {% for li in seg.data['items'] %}
+                        <li>{{ li|safe }}</li>
+                    {% endfor %}
+                </{{ ls }}>
+            {% elif seg.type == "embed" %}
+                <div class="ui vertical segment">
+                    <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
+                    <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                </div>
+            {% elif seg.type == "table" %}
+                {% set table_content = seg.data["content"] %}
+                <table class="ui celled table">
+                    {% if seg.data.withHeadings %}
+                        <thead>
+                            <tr>
+                                {% for elem in table_content[0] %}
+                                    <th>{{ elem }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        {% set table_content = seg.data["content"] | pop1 %}
+                    {% endif %}
+                    <tbody>
+                        {% for content in table_content %}
+                            <tr>
+                                {% for elem in content %}
+                                    <td>{{ elem }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {{ seg.type }}
+            {% endif %}
+        {% endfor %}
+        <hr class="ui divider" />
+        <div class="ui secondary segment">
+            <i class="ui header">Tags:&nbsp;</i>
+            {% for tag in tags.split(',') %}
+                <div class="ui black label">
+                    {{ tag }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.ui.embed').embed();
+            
+            code_hak = $('pre code').text().trim();
+            $('pre code').text(code_hak);
+            hljs.highlightAll();
+
+            $('.header_link').click(function(e){
+                e.preventDefault();
+                var copyText = $(this).prop('href');
+                document.addEventListener('copy', function(e) {
+                    e.clipboardData.setData('text/plain', copyText);
+                    e.preventDefault();
+                }, true);
+
+                document.execCommand("copy");
+
+                $(this).find('i').transition('pulse');
+            });
+        });
+    </script>
+{% endblock %}
