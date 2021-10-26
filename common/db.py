@@ -1,11 +1,21 @@
 from config import Config
-import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
-client = motor.motor_asyncio.AsyncIOMotorClient(Config.MONGODB_URL)
-db = client[Config.MONGODB_DB]
+db_client: AsyncIOMotorClient = None
+
+async def connect_db():
+    db_client = AsyncIOMotorClient(Config.MONGODB_URL)
+
+async def get_db() -> AsyncIOMotorDatabase:
+    client = AsyncIOMotorClient(Config.MONGODB_URL)
+    db = client[Config.MONGODB_DB]
+    return db
+
+async def close_db():
+    db_client.close()
 
 collections = dict(
-    articles=db.articles,
-    users=db.users,
-    hosts=db.hosts
+    articles="articles",
+    users="users",
+    hosts="hosts"
 )

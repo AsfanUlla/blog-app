@@ -12,36 +12,6 @@ from typing import Optional
 router = APIRouter()
 
 
-@router.get("/{article_slug}", response_class=HTMLResponse)
-async def article(article_slug, request: Request):
-    article_slug = str(article_slug)
-    query = dict(
-        slug=article_slug,
-        is_suspended=False,
-        published=True
-        )
-    if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_host_url
-    article = await MongoInterface().find_or_404(
-        collection_name=collections["articles"],
-        query=query,
-        exclude=dict(
-            _id=0,
-            cd=0
-        ),
-        error_message="Article not found"
-    )
-
-    html_content = dict(
-        request=request,
-        site_header=request.state.current_host,
-        title=article["title"],
-        data=article["article_data"],
-        tags=article["tags"]
-    )
-    return templates.TemplateResponse("components/article.html", html_content)
-
-
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, previous_page: Optional[PyObjectId] = None, next_page: Optional[PyObjectId] = None):
     query = dict(
@@ -102,3 +72,33 @@ async def home(request: Request, previous_page: Optional[PyObjectId] = None, nex
     )
 
     return templates.TemplateResponse("components/home.html", html_content)
+
+
+@router.get("/{article_slug}", response_class=HTMLResponse)
+async def article(article_slug, request: Request):
+    article_slug = str(article_slug)
+    query = dict(
+        slug=article_slug,
+        is_suspended=False,
+        published=True
+        )
+    if Config.ENV != 'LOCAL':
+        query["hosts"] = request.state.current_host_url
+    article = await MongoInterface().find_or_404(
+        collection_name=collections["articles"],
+        query=query,
+        exclude=dict(
+            _id=0,
+            cd=0
+        ),
+        error_message="Article not found"
+    )
+
+    html_content = dict(
+        request=request,
+        site_header=request.state.current_host,
+        title=article["title"],
+        data=article["article_data"],
+        tags=article["tags"]
+    )
+    return templates.TemplateResponse("components/article.html", html_content)

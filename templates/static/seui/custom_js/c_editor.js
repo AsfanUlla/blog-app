@@ -38,7 +38,7 @@ $(document).ready(function() {
         }
 
         $.each(article_doc['hosts'], function(i,e){
-            $("#hosts option[value='" + e + "']").prop("selected", true);
+            $(".ui.dropdown.host").find("option[value='" + e + "']").prop("selected", true);
         });
 
         data = article_doc['article_data'];
@@ -153,6 +153,7 @@ $(document).ready(function() {
                                 alert(response.message);
                                 editor.blocks.clear();
                                 $('.ui.form.editor')[0].reset();
+                                $('.ui.dropdown.host').dropdown('clear');
                             } else if(this.status >= 400 && this.status < 499){
                                 alert(response.detail);
                             } else {
@@ -175,6 +176,7 @@ $(document).ready(function() {
         e.preventDefault();
         editor.blocks.clear();
         $('.ui.form.editor')[0].reset();
+        $('.ui.dropdown.host').dropdown('clear');
     });
     
 });

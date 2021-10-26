@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from common.utils import verify_token
 from common.views import RediectException, redirect, CurrentHost
+from common.db import close_db, connect_db
 from articles.views import router as article_router
 from editor.views import router as editor_router
 from admin.views import router as admin_router
@@ -10,6 +11,9 @@ from starlette.middleware.sessions import SessionMiddleware
 from config import Config
 
 app = FastAPI()
+
+app.add_event_handler("startup", connect_db)
+app.add_event_handler("shutdown", close_db)
 
 app.add_middleware(
     CORSMiddleware,
