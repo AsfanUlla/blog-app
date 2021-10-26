@@ -206,7 +206,7 @@ class CurrentHost(BaseHTTPMiddleware):
         request.state.current_host = request.base_url.hostname.capitalize()
         request.state.current_host_url = str(request.base_url).strip("/")
         if Config().ENV != "LOCAL":
-            MongoInterface.find_or_404(
+            await MongoInterface.find_or_404(
                 collection_name=collections["hosts"], 
                 query=dict(
                     host=request.state.current_host_url
