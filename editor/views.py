@@ -80,7 +80,7 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
 
 
 @router.post("/upload_image")
-async def upload_img(img: UploadFile = File(...)):
+async def upload_img(request: Request, img: UploadFile = File(...)):
     img_typ = imghdr.what(img.file)
     if img_typ is None:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="File type not allowed")
@@ -96,7 +96,7 @@ async def upload_img(img: UploadFile = File(...)):
     with open(file_path, 'wb') as f:
         f.write(img.file.read())
         f.close()
-    file_url = Config.HOST_URL + "/static/article_files/" + today_dir + "/" + filename
+    file_url = request.state.current_host_url + "/static/article_files/" + today_dir + "/" + filename
     response = dict(
         success=1,
         file=dict(

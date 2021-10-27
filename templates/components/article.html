@@ -74,7 +74,7 @@
                 </div>
             {% elif seg.type == "image" %}
                 <div class="ui vertical segment">
-                    <img class="ui rounded image" src="{{ seg.data.file.url }}">
+                    <img class="ui rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
                     <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
                 </div>
             {% elif seg.type == "checklist" %}

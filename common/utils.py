@@ -10,7 +10,7 @@ from bson import ObjectId
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from slugify import slugify
-
+from urllib.parse import urlparse
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -25,10 +25,14 @@ def pop1(alist):
     del alist[0]
     return alist
 
+def jpath(url):
+    return str(urlparse(url).path)[1:]
+
 templates.env.trim_blocks = True
 templates.env.lstrip_blocks = True
 templates.env.filters['jslug'] = jslug_filter
 templates.env.filters['pop1'] = pop1
+templates.env.filters['jpath'] = jpath
 
 
 def verify_password(plain_password, hashed_password):
