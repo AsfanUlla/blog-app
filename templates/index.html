@@ -145,28 +145,27 @@
 
         </div>
 
-
         {% block jscript %}
-        <!--<script src="{{ request.base_url }}static/seui/jquery-3.6.0.min.js" ></script>-->
-        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-        <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
-        <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>
-        <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/jquery-3.6.0.slim.min.js" ></script>
+            <!--<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>-->
+            <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
 
-        <script>
-            $(document).ready(function() {
-                $('.ui.sticky')
-                .sticky({
-                    offset       : 50,
-                    bottomOffset : 50,
-                    context: '#main_space',
-                    pushed: true
+            <script>
+                $(document).ready(function() {
+                    $('.ui.sticky')
+                    .sticky({
+                        offset       : 50,
+                        bottomOffset : 50,
+                        context: '#main_space',
+                        pushed: true
+                    });
+
+                    $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
+                    .sidebar('attach events', '.toc.item');
                 });
-
-                $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
-                .sidebar('attach events', '.toc.item');
-            });
-        </script>
+            </script>
         {% endblock %}
 
     </body>
