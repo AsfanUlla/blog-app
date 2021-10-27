@@ -155,11 +155,11 @@
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.ui.embed').embed();
-            
             code_hak = $('pre code').text().trim();
             $('pre code').text(code_hak);
             hljs.highlightAll();
+
+            $('.ui.embed').embed();
 
             $('.header_link').click(function(e){
                 e.preventDefault();
