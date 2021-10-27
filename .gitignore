@@ -8,8 +8,8 @@ __pycache__/
 .vscode/
 config.py
 
-article_files/*
-!article_files/.gitkeep
+templates/static/article_files/*
+!templates/static/article_files/.gitkeep
 
 # C extensions
 *.so
