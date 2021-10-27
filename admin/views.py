@@ -61,7 +61,7 @@ async def user_logout(request: Request):
     
 
 @router.post("/register", response_model=SchemalessResponse)
-async def add_user(user: AddUserSchema = Body(..., ), payload: dict = Depends(verify_token)):
+async def add_user(user: AddUserSchema, payload: dict = Depends(verify_token)):
     if not payload[0]["is_su_admin"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     user_doc = await MongoInterface.find_or_none(
@@ -76,13 +76,6 @@ async def add_user(user: AddUserSchema = Body(..., ), payload: dict = Depends(ve
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already exist")
     user.passwd = get_password_hash(user.passwd)
     post_obj = jsonable_encoder(user)
-    post_obj.update(
-        dict(
-            is_verified=False,
-            is_editor=False,
-            is_su_admin=False,
-        )
-    )
     user_add = await MongoInterface.insert_one(collections['users'], post_obj)
     response = SchemalessResponse(
         data=dict(

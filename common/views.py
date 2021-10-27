@@ -183,23 +183,6 @@ async def redirect(request: Request, exc: RediectException):
     return RedirectResponse(url=exc.path, status_code=exc.status_code)
 
 
-"""class CurrentHost(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        request.state.current_host = request.base_url.hostname.capitalize()
-        request.state.current_host_url = str(request.base_url).strip("/")
-        if Config().ENV != "LOCAL":
-            MongoInterface.find_or_404(
-                collection_name=collections["hosts"], 
-                query=dict(
-                    host=request.state.current_host_url
-                ),
-                exclude=dict(
-                    _id=1
-                ),
-                error_message="Unallowed host"
-            )
-        return await call_next(request)"""
-
 class CurrentHost(BaseHTTPMiddleware):
     async def __call__(self, scope, receive, send) -> None:
         request = Request(scope, receive)

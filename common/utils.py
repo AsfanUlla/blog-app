@@ -64,6 +64,7 @@ async def verify_token(request: Request):
             collections['users'],
             query=dict(
                 _id=ObjectId(user_id),
+                #is_diabled=False
             ),
             exclude=dict(
                 _id=False,

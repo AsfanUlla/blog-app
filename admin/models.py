@@ -1,10 +1,14 @@
-from pydantic import BaseModel, Field, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl
 
 
 class AddUserSchema(BaseModel):
-    full_name: str = Field(...)
-    email: EmailStr = Field(...)
-    passwd: str = Field(...)
+    full_name: str
+    email: EmailStr
+    passwd: str
+    is_verified: bool = False
+    is_editor: bool = False
+    is_su_admin: bool =False
+    is_diabled: bool = False
 
 
 class UserLoginSchema(BaseModel):
