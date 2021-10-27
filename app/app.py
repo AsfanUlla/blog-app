@@ -11,7 +11,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from config import Config
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+import os
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -33,6 +34,10 @@ app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
 app.add_exception_handler(RediectException, redirect)
 app.add_middleware(CurrentHost)
+
+@app.get("/robots.txt", response_class=FileResponse)
+async def get_robots_txt():
+    return  os.getcwd() + "/templates/robots.txt"
 
 @app.get("/openapi.json")
 async def get_open_api_endpoint(payload: dict = Depends(verify_token)):
