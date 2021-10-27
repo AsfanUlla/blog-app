@@ -28,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=False)
+app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=Config.HTTPS_ONLY)
 
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
