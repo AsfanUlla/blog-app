@@ -22,10 +22,11 @@
 
         <style>
         {% block style %}
-            body{
+            body.pushable>.pusher{
                 background-color: #c9f5f9;
                 background-image: url("{{ url_for('static', path='/seui/assets/images/bg1.svg') }}");
                 background-attachment: fixed;
+                overflow-x: hidden;
             }
             .inline-code {
                 background-color: #ffcccb;
@@ -46,6 +47,17 @@
                 width: 100%;
                 padding: 3em 0;
             }
+            .item.ham{
+                    display: none !important;
+            }
+            @media only screen and (max-width: 600px) {
+                .item.xo{
+                    display: none !important;
+                }
+                .item.ham{
+                    display: block !important;
+                }
+            }
         {% endblock %}
         </style>
 
@@ -61,57 +73,77 @@
                     pushed: true
                 });
 
+                $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
+                .sidebar('attach events', '.toc.item');
             });
         </script>
         {% endblock %}
     </head>
     <body>
 
-        <!--Nav Bar-->
-        <div class="ui borderless main menu">
-            <div class="ui container">
-              <h2 class="ui header item">
-                <!--<img class="logo" src="">-->
-                {% block site_header %}{% endblock %}
-              </h2>
-              <div class="ui right floated item">
-                {% block nav_items %}
-                    <a href="/" class="item">Blogs</a>
-                    <a href="#" class="item">Contact Us</a>
-                {% endblock %}
-              </div>
-            </div>
-        </div>
-        
-        {% block content %}{% endblock %}
-
-        <div class="ui inverted vertical footer segment">
-            <div class="ui container">
-                <div class="ui stackable inverted divided equal height stackable grid">
-                    <div class="three wide column">
-                        <h4 class="ui inverted header">About</h4>
-                        <div class="ui inverted link list">
-                            <a href="#" class="item">Sitemap</a>
-                            <a href="#" class="item">Contact Us</a>
-                        </div>
-                    </div>
-                    <!--
-                    <div class="three wide column">
-                        <h4 class="ui inverted header">Services</h4>
-                        <div class="ui inverted link list">
-                            <a href="#" class="item">Banana Pre-Order</a>
-                            <a href="#" class="item">DNA FAQ</a>
-                            <a href="#" class="item">How To Access</a>
-                            <a href="#" class="item">Favorite X-Men</a>
-                        </div>
-                    </div>
-                    -->
-                    <div class="seven wide column">
-                        <h4 class="ui inverted header">&copy; Linuxmansch</h4>
-                        <p>//about us line</p>
+        <!-- top bar -->
+        <div class="ui top sidebar">
+            <div class="ui borderless topb menu">
+                <div class="ui container">
+                    <div class="ui right floated item">
+                        {{ self.nav_items() }}
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="pusher">
+
+            <!--Nav Bar-->
+            <div class="ui borderless main menu">
+                <div class="ui container">
+                    <h3 class="ui header item">
+                        <!--<img class="logo" src="">-->
+                        {% block site_header %}{% endblock %}
+                    </h3>
+                    <div class="ui right floated item xo">
+                        {% block nav_items %}
+                            <a href="/" class="item">Blogs</a>
+                            <a href="#" class="item">Contact Us</a>
+                        {% endblock %}
+                    </div>
+                    <div class="ui right floated item ham">
+                        <a class="toc item"><i class="large sidebar icon"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            {% block content %}{% endblock %}
+
+            <div class="ui inverted vertical footer segment">
+                <div class="ui container">
+                    <div class="ui stackable inverted divided equal height stackable grid">
+                        <div class="three wide column">
+                            <h4 class="ui inverted header">About</h4>
+                            <div class="ui inverted link list">
+                                <a href="#" class="item">Sitemap</a>
+                                <a href="#" class="item">Contact Us</a>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="three wide column">
+                            <h4 class="ui inverted header">Services</h4>
+                            <div class="ui inverted link list">
+                                <a href="#" class="item">Banana Pre-Order</a>
+                                <a href="#" class="item">DNA FAQ</a>
+                                <a href="#" class="item">How To Access</a>
+                                <a href="#" class="item">Favorite X-Men</a>
+                            </div>
+                        </div>
+                        -->
+                        <div class="seven wide column">
+                            <h4 class="ui inverted header">&copy; Linuxmansch</h4>
+                            <p>//about us line</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </body>

@@ -124,15 +124,17 @@
                 {{ seg.type }}
             {% endif %}
         {% endfor %}
-        <hr class="ui divider" />
-        <div class="ui secondary segment">
-            <i class="ui header">Tags:&nbsp;</i>
-            {% for tag in tags.split(',') %}
-                <div class="ui black label">
-                    {{ tag }}
-                </div>
-            {% endfor %}
-        </div>
+        {% if tags %}
+            <hr class="ui divider" />
+            <div class="ui secondary segment">
+                <i class="ui header">Tags:&nbsp;</i>
+                {% for tag in tags.split(',') %}
+                    <div class="ui black label">
+                        {{ tag }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <script>
