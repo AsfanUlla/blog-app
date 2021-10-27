@@ -124,7 +124,21 @@ async def editor(request: Request, article: Optional[str] = None):
             ),
             error_message="Article not found"
         )
-    hosts = ["http://localhost.com", "http://localhos2.co", "http://localhost3.com"]
+    host_doc = await MongoInterface.find_all(
+        collection_name=collections["hosts"],
+        query=dict(
+            enabled=True
+        ),
+        exclude=dict(
+            _id=False,
+            enabled=False
+        )
+    )
+    if not host_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Configure hosts first")
+    hosts = []
+    for host in host_doc:
+        hosts.append(host["host"])
     html_content = dict(
         request=request,
         site_header=request.state.current_host,
