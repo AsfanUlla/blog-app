@@ -12,6 +12,7 @@ from config import Config
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.gzip import GZipMiddleware
 import os
 
 
@@ -29,6 +30,7 @@ app.add_middleware(
 )
 
 app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=Config.HTTPS_ONLY)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
