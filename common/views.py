@@ -1,6 +1,6 @@
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException, status, Request, Response, Depends
-from datetime import datetime
+import datetime
 from bson import ObjectId, objectid
 from pymongo import UpdateOne
 from pymongo.errors import BulkWriteError
@@ -36,8 +36,8 @@ class MongoInterface:
             doc_exist = await db[collection_name].find_one(exist_query, {"_id": 1})
             if doc_exist:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=error_message)
-        post_obj = jsonable_encoder(post_obj)
-        post_obj['cd'] = datetime.utcnow()
+        #post_obj = jsonable_encoder(post_obj)
+        post_obj['cd'] = datetime.datetime.utcnow()
         doc = await db[collection_name].insert_one(post_obj)
         # doc = await db[collection_name].find_one({"_id": doc.inserted_id})
         return str(doc.inserted_id)

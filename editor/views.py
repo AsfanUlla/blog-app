@@ -7,7 +7,7 @@ from common.models import SchemalessResponse
 from common.views import MongoInterface
 from common.db import collections
 from slugify import slugify
-from datetime import datetime, date
+import datetime
 import os
 import imghdr
 from config import Config
@@ -38,7 +38,7 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
         if data.published:
             post_obj.update(
                 dict(
-                    published_date = datetime.utcnow()
+                    published_date = datetime.datetime.utcnow()
                 )
             )
         update_article = await MongoInterface.update_doc(
@@ -55,7 +55,7 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
             raise HTTPException(status.HTTP_409_CONFLICT, detail="article already exist")
         published_date = None
         if data.published:
-            published_date = datetime.utcnow()
+            published_date = datetime.datetime.utcnow()
         post_obj.update(
             dict(
                 is_suspended=False,
@@ -85,7 +85,7 @@ async def upload_img(img: UploadFile = File(...)):
     if img_typ is None:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="File type not allowed")
     root_dir = os.getcwd() + "/templates/static/article_files/"
-    today_dir = str(date.today())
+    today_dir = str(datetime.date.today())
     try:
         if not os.path.exists(root_dir + today_dir):
             os.mkdir(root_dir + today_dir)
