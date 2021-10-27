@@ -2,85 +2,84 @@
 <html>
     <head>
         {% block head %}
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  
-        <title>{% block title %}{% endblock %}</title>
-        {% block meta %}
-            <meta name="title" content="//placeholder">
-            <meta name="description" content="//placeholder">
-            <meta name="keywords" content="//placeholder">
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    
+            <title>{% block title %}{% endblock %}</title>
+
+            <meta name="title" content="{{ self.title() }}">
+            <meta name="description" content="{% block meta_desc %}//placeholder{% endblock %}">
+            <meta name="keywords" content="{% block meta_keywords %}//placeholder{% endblock %}">
             <meta name="language" content="English">
             <meta name="author" content="https://github.com/AsfanUlla">
-            <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-        {% endblock %}
 
-        <!-- FavIcons-TODO -->
 
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/seui/semantic.min.css') }}">
+            <!-- FavIcons-TODO -->
 
-        <style>
-        {% block style %}
-            body.pushable>.pusher{
-                background-color: #c9f5f9;
-                background-image: url("{{ url_for('static', path='/seui/assets/images/bg1.svg') }}");
-                background-attachment: fixed;
-                overflow-x: hidden;
-            }
-            .inline-code {
-                background-color: #ffcccb;
-                color: #8b0000;
-                font-weight: lighter;
-            }
-            mark {
-                background-color: #ADD8E6;
-                color: #000000;
-                font-weight: lighter;
-            }
-            #main_space{
-                margin-bottom: 5em;
-                overflow-wrap: break-word;
-            }
-            .footer.segment {
-                bottom: 0;
-                width: 100%;
-                padding: 3em 0;
-            }
-            .item.ham{
-                    display: none !important;
-            }
-            @media only screen and (max-width: 600px) {
-                .item.xo{
-                    display: none !important;
+            {% block stylesheet %}
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/site.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/reset.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sidebar.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sticky.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/menu.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/segment.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/container.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/rail.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/divider.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/button.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/icon.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/label.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/grid.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/list.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/header.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/ad.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/item.min.css">
+            {% endblock %}
+         
+            <style>
+            {% block style %}
+                body.pushable>.pusher{
+                    background-color: #c9f5f9;
+                    background-image: url("{{ request.base_url }}static/seui/assets/images/bg1.svg");
+                    background-attachment: fixed;
+                    overflow-x: hidden;
+                }
+                .inline-code {
+                    background-color: #ffcccb;
+                    color: #8b0000;
+                    font-weight: lighter;
+                }
+                mark {
+                    background-color: #ADD8E6;
+                    color: #000000;
+                    font-weight: lighter;
+                }
+                #main_space{
+                    margin-bottom: 5em;
+                    overflow-wrap: break-word;
+                }
+                .footer.segment {
+                    bottom: 0;
+                    width: 100%;
+                    padding: 3em 0;
                 }
                 .item.ham{
-                    display: block !important;
+                        display: none !important;
                 }
-            }
-        {% endblock %}
-        </style>
-
-        <script src="{{ url_for('static', path='/seui/jquery-3.6.0.min.js') }}" ></script>
-        <script src="{{ url_for('static', path='/seui/semantic.min.js') }}" rel="stylesheet"></script>
-        <script>
-            $(document).ready(function() {
-                $('.ui.sticky')
-                .sticky({
-                    offset       : 50,
-                    bottomOffset : 50,
-                    context: '#main_space',
-                    pushed: true
-                });
-
-                $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
-                .sidebar('attach events', '.toc.item');
-            });
-        </script>
+                @media only screen and (max-width: 600px) {
+                    .item.xo{
+                        display: none !important;
+                    }
+                    .item.ham{
+                        display: block !important;
+                    }
+                }
+            {% endblock %}
+            </style>
         {% endblock %}
     </head>
     <body>
-
         <!-- top bar -->
         <div class="ui top sidebar">
             <div class="ui borderless topb menu">
@@ -97,13 +96,13 @@
             <!--Nav Bar-->
             <div class="ui borderless main menu">
                 <div class="ui container">
-                    <h3 class="ui header item">
+                    <a class="ui header item" href="/">
                         <!--<img class="logo" src="">-->
                         {% block site_header %}{% endblock %}
-                    </h3>
+                    </a>
                     <div class="ui right floated item xo">
                         {% block nav_items %}
-                            <a href="/" class="item">Blogs</a>
+                            <a href="#" class="item">Blogs</a>
                             <a href="#" class="item">Contact Us</a>
                         {% endblock %}
                     </div>
@@ -145,6 +144,29 @@
             </div>
 
         </div>
+
+
+        {% block jscript %}
+        <script src="{{ request.base_url }}static/seui/jquery-3.6.0.min.js" ></script>
+        <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
+        <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>
+        <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('.ui.sticky')
+                .sticky({
+                    offset       : 50,
+                    bottomOffset : 50,
+                    context: '#main_space',
+                    pushed: true
+                });
+
+                $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
+                .sidebar('attach events', '.toc.item');
+            });
+        </script>
+        {% endblock %}
 
     </body>
 

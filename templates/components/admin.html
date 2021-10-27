@@ -5,6 +5,18 @@
     {{ super() }}
     <a href="/admin/logout" class="item">Logout</a>
 {% endblock %}
+
+{% block stylesheet %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/checkbox.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/modal.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/dimmer.min.css">
+{% endblock %}
+
 {% block content %}
     <div class="ui container raised padded clearing segment" id="main_space">
         <table class="ui compact celled definition table">
@@ -127,7 +139,16 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/custom_js/c_admin.js') }}"></script>
-
 {% endblock %}}
+
+{% block jscript %}
+{{ super() }}
+    <script src="{{ request.base_url }}static/seui/components/checkbox.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/transition.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/modal.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/dimmer.min.js"></script>
+
+    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
+    <script src="{{ request.base_url }}static/seui/custom_js/c_admin.js"></script>
+{% endblock %}

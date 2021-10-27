@@ -6,6 +6,16 @@
     <a href="/admin" class="item">Admin</a>
     <a href="/admin/logout" class="item">Logout</a>
 {% endblock %}
+
+{% block stylesheet %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/checkbox.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/dropdown.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
+{% endblock %}
+
 {% block style %}
     {{ super() }}
     #editorjs{
@@ -69,31 +79,37 @@
             </div>
         </form>
     </div>
+{% endblock %}
 
+{% block jscript %}
+{{ super() }}
+    <script src="{{ request.base_url }}static/seui/components/checkbox.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/dropdown.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/transition.min.js"></script>
 
-    <script src="{{ url_for('static', path='/seui/editorjs/editor.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/header.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/list.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/inline-code.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/code.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/paragraph.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/embed.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/marker.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/warning.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/image.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/raw.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/quote.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/checklist.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/delimiter.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/table.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/editorjs/underline.js') }}"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/editor.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/header.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/list.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/inline-code.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/code.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/paragraph.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/embed.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/marker.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/warning.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/image.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/raw.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/quote.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/checklist.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/delimiter.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/table.js"></script>
+    <script src="{{ request.base_url }}static/seui/editorjs/underline.js"></script>
 
-    <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
+    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
     <script>
         //$(document).ready(function() {
             var article_doc = {{ article_doc|tojson }};
         //});
     </script>
-    <script src="{{ url_for('static', path='/seui/custom_js/c_editor.js') }}"></script>
-
+    <script src="{{ request.base_url }}static/seui/custom_js/c_editor.js"></script>
 {% endblock %}

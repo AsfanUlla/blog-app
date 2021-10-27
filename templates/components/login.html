@@ -1,6 +1,13 @@
 {% extends "index.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block site_header %}{{ site_header }}{% endblock %}
+
+{% block stylesheet %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
+{% endblock %}
+
 {% block content %}
     <div class="ui container raised padded clearing segment" id="main_space">
         <div class="left ui rail">
@@ -29,8 +36,11 @@
             <button class="ui button" id="login_s">Submit</button>
         </form>
     </div>
+{% endblock %}
 
-
-     <script src="{{ url_for('static', path='/seui/custom_js/xhr.js') }}"></script>
-    <script src="{{ url_for('static', path='/seui/custom_js/c_login.js') }}"></script>
+{% block jscript %}
+{{ super() }}
+    <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
+    <script src="{{ request.base_url }}static/seui/custom_js/c_login.js"></script>
 {% endblock %}
