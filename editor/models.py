@@ -1,5 +1,6 @@
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
+from common.views import PyObjectId
 
 
 class SaveArticle(BaseModel):
@@ -9,3 +10,4 @@ class SaveArticle(BaseModel):
     hosts: List[HttpUrl]
     tags: Optional[str] = None
     edit: bool = False
+    article_id: Optional[PyObjectId] = None

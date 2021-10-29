@@ -8,6 +8,8 @@ from common.utils import get_password_hash, verify_password, create_access_token
 from datetime import timedelta, datetime
 from common.db import collections
 from starlette.requests import Request
+from bson import ObjectId
+
 
 router = APIRouter()
 
@@ -128,25 +130,80 @@ async def add_host(_host: AddHostSchema, payload: dict = Depends(verify_token)):
 
 @router.get("", response_class=HTMLResponse)
 async def admin(request: Request, payload: dict = Depends(verify_token)):
-    if not payload[0]["is_su_admin"]:
+    down = True
+    if down:
+        return "Down for maintenance"
+    if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
-    users = await MongoInterface.find_all(
-        collection_name=collections['users'],
+
+    users = None
+    hosts = None
+
+    article_query = dict(
+        author_id=payload[1]["user_id"]
+    )
+
+    if payload[0]["is_su_admin"]:
+        users = await MongoInterface.find_all(
+            collection_name=collections['users'],
+            exclude=dict(
+                passwd=0
+            )
+        )
+
+        hosts = await MongoInterface.find_all(
+            collection_name=collections["hosts"]
+        )
+
+        article_query = None
+
+    articles = await MongoInterface.find_all(
+        collection_name=collections["articles"],
+        query=article_query,
         exclude=dict(
-            passwd=0
+            article_data=0,
+            tags=0
         )
     )
 
-    hosts = await MongoInterface.find_all(
-        collection_name=collections["hosts"]
+    article_list = []
+
+    if articles:
+        for article in articles:
+            author = await MongoInterface.find_or_none(
+                collection_name=collections["users"], 
+                query=dict(
+                    _id=ObjectId(article['author_id'])
+                ),
+                exclude=dict(
+                    full_name=1,
+                    email=1
+                )
+            )
+            article['author'] = None
+            article['author_email'] = None
+            if author:
+                article['author'] = author['full_name']
+                article['author_email'] = author['email']
+            if article['published_date']:
+                article['published_date'] = article['published_date'].date().isoformat()
+
+            del article['author_id']
+
+            article_list.append(article)
+
+    admin_data = dict(
+        articles=article_list,
+        users=users,
+        hosts=hosts
     )
 
     html_content = dict(
         request=request,
         site_header=request.state.current_host,
         title="Admin",
-        users=users,
-        hosts=hosts
+        data=admin_data
+        
     )
     return templates.TemplateResponse("components/admin.html", html_content)
 

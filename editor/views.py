@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from common.utils import verify_token, templates
 from editor.models import *
 from common.models import SchemalessResponse
-from common.views import MongoInterface
+from common.views import MongoInterface, PyObjectId
 from common.db import collections
 from slugify import slugify
 import datetime
@@ -12,26 +12,40 @@ import os
 import imghdr
 from config import Config
 from typing import Optional
+from bson import ObjectId
 
 
 router = APIRouter()
 
 
-@router.post("/save", response_model=SchemalessResponse)
+@router.post("/save")
 async def save_article(request: Request, data: SaveArticle, payload: dict = Depends(verify_token)):
+    if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     article_slug = slugify(data.title)
+    edit = data.edit
+    del data.edit
+
+    query = dict(
+        slug=article_slug
+    )
+    if edit:
+        query = dict(
+            _id=ObjectId(data.article_id)
+        )
+    
     doc = await MongoInterface.find_or_none(
         collection_name=collections["articles"],
-        query=dict(
-            slug=article_slug
-        ),
+        query=query,
         exclude=dict(
             _id=1
         )
     )
-    edit = data.edit
-    del data.edit
+
+    del data.article_id
     post_obj = jsonable_encoder(data)
+    article_id = None
+
     if edit:
         if doc is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="article not found")
@@ -49,6 +63,7 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
             update_data=post_obj,
             q_type='set'
         )
+        article_id = doc["_id"]
         message = "article updated successfully"
     else:
         if doc:
@@ -64,7 +79,7 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
                 published_date=published_date
             )
         )
-        saved_article = await MongoInterface.insert_one(
+        article_id = await MongoInterface.insert_one(
             collection_name=collections["articles"],
             post_obj=post_obj
         )
@@ -72,7 +87,8 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
 
     response = SchemalessResponse(
         data=dict(
-            success=True
+            success=True,
+            article_id=str(article_id)
         ),
         message=message
     )
@@ -80,7 +96,9 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
 
 
 @router.post("/upload_image")
-async def upload_img(request: Request, img: UploadFile = File(...)):
+async def upload_img(request: Request, img: UploadFile = File(...), payload: dict = Depends(verify_token)):
+    if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     img_typ = imghdr.what(img.file)
     if img_typ is None:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="File type not allowed")
@@ -107,13 +125,15 @@ async def upload_img(request: Request, img: UploadFile = File(...)):
 
 
 @router.get("", response_class=HTMLResponse)
-async def editor(request: Request, article: Optional[str] = None):
+async def editor(request: Request, article: Optional[PyObjectId] = None, payload: dict = Depends(verify_token)):
+    if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     article_doc = None
     if article:
         article_doc = await MongoInterface.find_or_404(
             collection_name=collections["articles"],
             query=dict(
-                slug=article
+                _id=ObjectId(article)
             ),
             exclude=dict(
                 is_suspended=0,

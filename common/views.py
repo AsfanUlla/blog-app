@@ -165,7 +165,9 @@ class MongoInterface:
 
         if not data:
             lt = await db[collection_name].find(query, exclude, sort=sort).limit(page_size).to_list(page_size)
-            return lt, None, None
+            lt_last_id = lt[-1]['_id']
+            lt_first_id = lt[0]['_id']
+            return lt, lt_first_id, lt_last_id
 
         last_id = data[-1]['_id']
         first_id = data[0]['_id']

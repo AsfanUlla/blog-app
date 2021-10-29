@@ -29,6 +29,7 @@ $(document).ready(function() {
     });
 
     var data = null;
+    var article_id = null;
     var edit = false;
     if (article_doc){
         $("#title").val(article_doc['title']).prop('disabled', true);
@@ -43,6 +44,8 @@ $(document).ready(function() {
 
         data = article_doc['article_data'];
         edit = true;
+        var urlParams = new URLSearchParams(window.location.search);
+        article_id = urlParams.get('article')
     }
 
     const editor = new EditorJS({
@@ -113,7 +116,10 @@ $(document).ready(function() {
     
     editor.isReady.then(() => {
         console.log('Editor.js is ready to work!');
+        $('.ui.form.editor').removeClass('loading');
     }).catch((reason) => {
+        $('.ui.form.editor').removeClass('loading');
+        alert('Error loading Editor Contact Admin');
         console.log(`Editor.js initialization failed because of ${reason}`);
     });
 
@@ -123,6 +129,8 @@ $(document).ready(function() {
 
     $( "#e_save" ).click(function(e) {
         e.preventDefault();
+
+        $('.ui.form.editor').addClass('loading');
 
         $('.ui.form.editor').form('validate form');
         if($('.ui.form.editor').form('is valid')){
@@ -139,7 +147,8 @@ $(document).ready(function() {
                         "article_data": outputData,
                         "published": published,
                         "hosts": $('#hosts').val(),
-                        "edit": edit
+                        "edit": edit,
+                        "article_id": article_id
                     }
 
                     if ($("#tags").val()){
@@ -151,9 +160,9 @@ $(document).ready(function() {
                             response = JSON.parse(this.response);
                             if (this.status < 299){
                                 alert(response.message);
-                                editor.blocks.clear();
-                                $('.ui.form.editor')[0].reset();
-                                $('.ui.dropdown.host').dropdown('clear');
+                                const urlParams = new URLSearchParams(window.location.search);
+                                urlParams.set('article', response.data["article_id"]);
+                                window.location.search = urlParams;
                             } else if(this.status >= 400 && this.status < 499){
                                 alert(response.detail);
                             } else {
@@ -172,11 +181,14 @@ $(document).ready(function() {
         }
     });
 
+    /*
     $( "#e_discard" ).click(function(e) {
         e.preventDefault();
         editor.blocks.clear();
         $('.ui.form.editor')[0].reset();
         $('.ui.dropdown.host').dropdown('clear');
+        window.location.href = '/editor';
     });
+    */
     
 });

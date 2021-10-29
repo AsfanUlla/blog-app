@@ -39,9 +39,7 @@
             <img>
             </div>
         </div>
-        <h1 class="ui header">{{ self.title() }}</h1>
-        <div class="ui divider"></div>
-        <form class="ui form editor" method="POST">
+        <form class="ui loading form editor" method="POST">
             <div class="field">
                 <div class="ui huge labeled fluid input">
                     <div class="ui label">
@@ -74,7 +72,7 @@
                 </div>
                 <div class="right floated column">
                     <button class="ui right floated primary button" id="e_save">Save</button>
-                    <button class="ui right floated secondary button" id="e_discard">Discard</button>
+                    <a class="ui right floated secondary button" id="e_discard" href="/editor">Reset</a>
                 </div>
             </div>
         </form>

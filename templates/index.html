@@ -40,10 +40,11 @@
             <style>
             {% block style %}
                 body.pushable>.pusher{
-                    background-color: #c9f5f9;
+                    /*background-color: #c9f5f9;
                     background-image: url("{{ request.base_url }}static/seui/assets/images/bg1.svg");
-                    background-attachment: fixed;
+                    background-attachment: fixed;*/
                     overflow-x: hidden;
+                    position: relative;
                 }
                 .inline-code {
                     background-color: #ffcccb;
@@ -60,12 +61,30 @@
                     overflow-wrap: break-word;
                 }
                 .footer.segment {
+                    padding: 3em 0;
+                    position: absolute;
                     bottom: 0;
                     width: 100%;
-                    padding: 3em 0;
+                }
+                .push {
+                    height: 100px;
+                    margin-bottom: 50px;
                 }
                 .item.ham{
                         display: none !important;
+                }
+                .segment.banner{
+                    background-color: #c9f5f9 !important;
+                    background-image: url("{{ request.base_url }}static/seui/assets/images/bg1.svg") !important;
+                    background-attachment: fixed !important;
+                    margin: 0 auto;
+                }
+                .borderless.main.menu{
+                    margin-bottom: 0;
+                }
+                .segment.blabel{
+                    background-color: rgba(3, 102, 214, 0.3) !important;
+                    border-radius: 5px !important;
                 }
                 @media only screen and (max-width: 600px) {
                     .item.xo{
@@ -111,8 +130,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="ui center aligned placeholder segment banner">
+                <div class="ui text container">
+                    <div class="ui basic center aligned compact segment blabel">
+                        <div class="ui huge inverted header">
+                            {{ self.title() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             {% block content %}{% endblock %}
+
+            <div class="push"></div>
 
             <div class="ui inverted vertical footer segment">
                 <div class="ui container">
@@ -146,7 +177,7 @@
         </div>
 
         {% block jscript %}
-            <script src="{{ request.base_url }}static/seui/jquery-3.6.0.slim.min.js" ></script>
+            <script src="{{ request.base_url }}static/seui/jquery-3.6.0.min.js" ></script>
             <!--<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>-->
             <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>

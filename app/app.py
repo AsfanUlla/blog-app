@@ -13,6 +13,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.gzip import GZipMiddleware
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 import os
 
 
@@ -31,6 +32,8 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=Config.HTTPS_ONLY)
 app.add_middleware(GZipMiddleware, minimum_size=256)
+if Config.ENV != "LOCAL":
+    app.add_middleware(HTTPSRedirectMiddleware)
 
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
@@ -43,10 +46,14 @@ async def get_robots_txt():
 
 @app.get("/openapi.json")
 async def get_open_api_endpoint(payload: dict = Depends(verify_token)):
+    if not payload[0]["is_su_admin"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     return JSONResponse(get_openapi(title="BlogAPI", version=1, routes=app.routes))
 
 @app.get("/docs")
 async def get_documentation(payload: dict = Depends(verify_token)):
+    if not payload[0]["is_su_admin"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     return get_swagger_ui_html(openapi_url="/openapi.json", title="blog-docs")
 
 app.include_router(editor_router, tags=["editor"], prefix="/editor", dependencies=[Depends(verify_token)])

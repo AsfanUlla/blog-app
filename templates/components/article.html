@@ -37,8 +37,6 @@
             <img>
             </div>
         </div>
-        <h1 class="ui header">{{ self.title() }}</h1>
-        <div class="ui divider"></div>
         {% for seg in data.blocks %}
             {% if seg.type == "header" %}
                     <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}

@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="ui container raised padded clearing segment" id="main_space">
+    {#<div class="ui container raised padded clearing segment" id="main_space">
         <table class="ui compact celled definition table">
             <thead>
                 <tr>
@@ -102,6 +102,14 @@
                 </tr>
             </tfoot>
         </table>
+    </div>#}
+
+    <div class="ui container basic padded clearing segment" id="main_space">
+        <div class="ui top attached tabular menu">
+            {% for keys, values in data.items() %}
+                <a class="item" data-tab="{{ keys }}">{{ keys }}</a>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- host Model Form-->
