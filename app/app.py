@@ -13,7 +13,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.gzip import GZipMiddleware
-from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+#from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 import os
 
 
@@ -32,8 +32,8 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=Config.HTTPS_ONLY)
 app.add_middleware(GZipMiddleware, minimum_size=256)
-if Config.ENV != "LOCAL":
-    app.add_middleware(HTTPSRedirectMiddleware)
+#if Config.ENV != "LOCAL":
+#    app.add_middleware(HTTPSRedirectMiddleware)
 
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
