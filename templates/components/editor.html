@@ -62,16 +62,9 @@
                 <textarea rows="2" name="tags" id="tags" placeholder="TAG1,TAG2"></textarea>
             </div>
             <div class="ui equal width stackable grid" style="margin-top: 1em;">
-                <div class="left floated column">
-                    <div class="field">
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="public"/>
-                            <label>Publish</label>
-                        </div>
-                    </div>
-                </div>
                 <div class="right floated column">
-                    <button class="ui right floated primary button" id="e_save">Save</button>
+                    <a class="ui right floated primary button" id="e_publish" href="{{ preview_url }}">Preview/Publish</a>
+                    <button class="ui right floated green button" id="e_save">Save</button>
                     <a class="ui right floated secondary button" id="e_discard" href="/editor">Reset</a>
                 </div>
             </div>

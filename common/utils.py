@@ -5,7 +5,7 @@ from typing import Optional, Dict
 from jose import JWTError, jwt
 from config import Config
 from common.db import collections
-from common.views import MongoInterface, RediectException
+from common.views import MongoInterface, RediectException, MLStripper
 from bson import ObjectId
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
@@ -28,11 +28,22 @@ def pop1(alist):
 def jpath(url):
     return str(urlparse(url).path)[1:]
 
+def mil_date(time):
+    date = datetime.fromtimestamp(time/1000.0).date().isoformat()
+    return date
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
+
 templates.env.trim_blocks = True
 templates.env.lstrip_blocks = True
 templates.env.filters['jslug'] = jslug_filter
 templates.env.filters['pop1'] = pop1
 templates.env.filters['jpath'] = jpath
+templates.env.filters['mdate'] = mil_date
+templates.env.filters['stag'] = strip_tags
 
 
 def verify_password(plain_password, hashed_password):

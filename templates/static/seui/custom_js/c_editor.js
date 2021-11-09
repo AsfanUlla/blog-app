@@ -29,8 +29,6 @@ $(document).ready(function() {
     });
 
     var data = null;
-    var article_id = null;
-    var edit = false;
     if (article_doc){
         $("#title").val(article_doc['title']).prop('disabled', true);
         $("input[name=public]").prop( "checked", article_doc['published'] );
@@ -43,9 +41,6 @@ $(document).ready(function() {
         });
 
         data = article_doc['article_data'];
-        edit = true;
-        var urlParams = new URLSearchParams(window.location.search);
-        article_id = urlParams.get('article')
     }
 
     const editor = new EditorJS({
@@ -129,57 +124,76 @@ $(document).ready(function() {
 
     $( "#e_save" ).click(function(e) {
         e.preventDefault();
+        save();
+    });
 
-        $('.ui.form.editor').addClass('loading');
-
+    $("#e_publish").click(function(e){
+        e.preventDefault();
         $('.ui.form.editor').form('validate form');
         if($('.ui.form.editor').form('is valid')){
-            editor.save().then((outputData) => {
-                if(outputData.blocks.length > 0){
-
-                    var published = false;
-                    if ($("input[name=public]").is(":checked")) {
-                        published = true;
-                    }
-
-                    value = {
-                        "title": $("#title").val(),
-                        "article_data": outputData,
-                        "published": published,
-                        "hosts": $('#hosts').val(),
-                        "edit": edit,
-                        "article_id": article_id
-                    }
-
-                    if ($("#tags").val()){
-                        value["tags"] = $("#tags").val();
-                    }
-
-                    function r_c(e){
-                        if (this.readyState === 4){
-                            response = JSON.parse(this.response);
-                            if (this.status < 299){
-                                alert(response.message);
-                                const urlParams = new URLSearchParams(window.location.search);
-                                urlParams.set('article', response.data["article_id"]);
-                                window.location.search = urlParams;
-                            } else if(this.status >= 400 && this.status < 499){
-                                alert(response.detail);
-                            } else {
-                                alert("Internal server error");
-                            }
-                        }
-                    }
-                    request("/editor/save", 'POST', value, r_c);
-
-                } else{
-                    alert("Empty editor");
-                }
-            }).catch((error) => {
-                console.log('Saving failed: ', error);
-            });
+            save(pub=true);
         }
     });
+
+
+    function save(pub=false){
+        var article_id = null;
+        var edit = false;
+
+        const aurl = window.location.href;
+        article_id = getParameterByName('article', aurl);
+        if (article_id && article_id != ""){
+            edit = true;
+        }
+
+        editor.save().then((outputData) => {
+            if(outputData.blocks.length > 0){
+                $('.ui.form.editor').addClass('loading');
+
+                value = {
+                    "title": $("#title").val(),
+                    "article_data": outputData,
+                    "hosts": $('#hosts').val(),
+                    "edit": edit,
+                    "article_id": article_id
+                }
+
+                if ($("#tags").val()){
+                    value["tags"] = $("#tags").val();
+                }
+
+                function r_c(e){
+                    if (this.readyState === 4){
+                        response = JSON.parse(this.response);
+                        if (this.status < 299){
+                            if(response.data["success"]){
+                                if(pub){
+                                    window.location.href = response.data["article_url"];
+                                }else{
+                                    $("#e_publish").attr("href", response.data["article_url"]);
+                                    article_id = getParameterByName('article', response.data["article_url"]);
+                                    history.replaceState(response, document.title, "?article="+article_id);
+                                }
+                            }
+                            alert(response.message);
+                        } else if(this.status >= 400 && this.status < 499){
+                            alert(response.detail);
+                        } else {
+                            alert("Internal server error");
+                        }
+                    }
+                    $('.ui.form.editor').removeClass('loading');
+                }
+                request("/editor/save", 'POST', value, r_c);
+
+            } else{
+                alert("Empty editor");
+            }
+        }).catch((error) => {
+            console.log('Saving failed: ', error);
+        });
+
+    }
 
     /*
     $( "#e_discard" ).click(function(e) {

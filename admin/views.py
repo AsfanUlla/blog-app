@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, HTTPException, status, Depends
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
-from admin.models import AddUserSchema, UserLoginSchema, AddHostSchema
+from admin.models import AddUserSchema, UserLoginSchema, AddHostSchema, Subs
 from common.models import SchemalessResponse, EmailSchema
 from fastapi.encoders import jsonable_encoder
 from common.views import MongoInterface
@@ -9,6 +9,7 @@ from datetime import timedelta, datetime
 from common.db import collections
 from starlette.requests import Request
 from bson import ObjectId
+from pydantic import EmailStr
 
 
 router = APIRouter()
@@ -124,6 +125,67 @@ async def add_host(_host: AddHostSchema, payload: dict = Depends(verify_token)):
             success=True
         ),
         message=message
+    )
+    return JSONResponse(jsonable_encoder(response))
+
+
+@router.post("/subscribe")
+async def subscribe(subs: Subs):
+    exist = await MongoInterface.find_or_none(
+        collection_name=collections["subscribers"],
+        query=dict(
+            email=subs.email
+        ),
+        exclude=dict(
+            active=1
+        )
+    )
+    if exist:
+        if not exist["active"]:
+            subs = await MongoInterface.update_doc(
+                collection_name=collections["subscribers"],
+                update_data=dict(
+                    active=True
+                ),
+                q_type='set'
+            )
+    else:
+        subs = await MongoInterface.insert_one(
+            collection_name=collections["subscribers"], 
+            post_obj=dict(
+                email=subs.email,
+                active=True
+            )
+        )
+
+    response = SchemalessResponse(
+        data=dict(
+            success=True
+        ),
+        message="Thank you for subscribing"
+    )
+    return JSONResponse(jsonable_encoder(response))
+ 
+
+@router.post("/unsubscribe")
+async def subscribe(subs: Subs):
+    subs = await MongoInterface.update_doc(
+        collection_name=collections["subscribers"], 
+        query=dict(
+            email=subs.email
+        ),
+        update_data=dict(
+            active=False,
+            inactive_date=datetime.utcnow()
+        ),
+        q_type='set'
+    )
+
+    response = SchemalessResponse(
+        data=dict(
+            success=True
+        ),
+        message="We are sorry to see you leave"
     )
     return JSONResponse(jsonable_encoder(response))
 

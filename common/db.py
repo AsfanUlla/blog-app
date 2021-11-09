@@ -17,5 +17,6 @@ async def close_db():
 collections = dict(
     articles="articles",
     users="users",
-    hosts="hosts"
+    hosts="hosts",
+    subscribers="subscribers"
 )

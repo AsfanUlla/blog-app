@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, HttpUrl
+from common.views import PyObjectId
 
 
 class AddUserSchema(BaseModel):
@@ -19,3 +20,6 @@ class UserLoginSchema(BaseModel):
 class AddHostSchema(BaseModel):
     host: HttpUrl
     enabled: bool = False
+
+class Subs(BaseModel):
+    email: EmailStr

@@ -9,6 +9,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from config import Config
 from common.db import collections, get_db
 from motor.motor_asyncio import AsyncIOMotorDatabase
+from io import StringIO
+from html.parser import HTMLParser
 
 
 class PyObjectId(ObjectId):
@@ -174,6 +176,12 @@ class MongoInterface:
         
         return data, first_id, last_id
 
+    @staticmethod
+    async def delete_one(**kwargs):
+        db = await get_db()
+        delete = await db[kwargs.get("collection_name")].delete_one(kwargs.get("query"))
+        return delete
+
 
 class RediectException(Exception):
     def __init__(self, path: str, status_code: int):
@@ -206,3 +214,16 @@ class CurrentHost(BaseHTTPMiddleware):
             return
 
         await self.app(scope, receive, send)
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.text = StringIO()
+    def handle_data(self, d):
+        self.text.write(d)
+    def get_data(self):
+        return self.text.getvalue()

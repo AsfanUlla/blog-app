@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!-- Primary Meta Tags -->
+    <title>{{ title }}</title>
+    <meta name="title" content="{{ title }}">
+		<meta name="description" content="{{ page_desc }}">
+
+    <!-- Open Graph / Facebook -->
+
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="#">
+		<meta property="og:title" content="{{ title }}">
+		<meta property="og:description" content="{{ page_desc }}">
+		<meta property="og:image" content="#">
+
+		<!-- Twitter -->
+
+		<meta property="twitter:card" content="summary_large_image">
+		<meta property="twitter:url" content="#">
+		<meta property="twitter:title" content="{{ title }}">
+		<meta property="twitter:description" content="{{ page_desc }}">
+		<meta property="twitter:image" content="#">
+
+		<link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/tail/css/app.css" />
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/tail/highlight/styles/base16/ir-black.min.css" />
+	 	<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+			rel="stylesheet">
+			<link href="https://fonts.googleapis.com/css2?family=Mr+Dafoe&display=swap" rel="stylesheet">
+
+			<link rel="preconnect" href="https://fonts.gstatic.com">
+			<link href="https://fonts.googleapis.com/css2?family=Monoton&display=swap" rel="stylesheet">
+	</head>
+	<body class=" bg-gradient-to-r from-gray-700 via-gray-900 to-black">
+
+  {% block nav %}
+    {% include '/partials/navigation.html' %}
+  {% endblock %}
+
+<section class="justify-center pt-24">
+  <div class="container px-10 mx-auto lg:px-28">
+    <div class="flex flex-col w-full mx-auto mb-2 text-left">
+      <p
+        class="
+          my-4
+          text-lg
+          leading-snug
+          tracking-tight
+          text-yellow-400
+          lg:w-2/3
+        "
+      >
+        {{ data.time | mdate }}
+      </p>
+      <h1
+        class="mb-2 text-4xl font-light tracking-tighter text-white lg:text-7xl"
+      >
+        {{ title }}
+      </h1>
+
+      <!--<p class="my-4 text-lg leading-snug tracking-tight text-white lg:w-2/3">
+        Through the lens of a set of certitudes based on deductions founded on
+        false premise.
+      </p>-->
+      {% if author %}
+      <a class="inline-flex items-center my-12">
+        <img
+          alt="blog"
+          src="{{ author.avatar }}"
+          class="
+            flex-shrink-0
+            object-cover object-center
+            w-12
+            h-12
+            rounded-full
+            shadow-synthBox
+          "
+        />
+        <span class="flex flex-col flex-grow ml-16">
+          <span class="font-medium text-white lg:text-xl">{{ author.full_name }}</span>
+          <span class="text-cyan-300 text-sm tracking-widest mt-0.5 font-dafoe">
+            {{ author.about }}</span
+          >
+        </span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<section class="text-gray-600">
+  <div class="container px-5 mx-auto lg:px-28 lg:py-4">
+    <div class="flex flex-col gap-6 lg:flex-row">
+      <div
+        class="
+          w-full
+          px-4
+          mt-12
+          text-lg
+          leading-snug
+          tracking-tight
+          text-white
+          lg:px-0 lg:w-4/4
+        "
+      >
+        {% for seg in data.blocks %}
+          {% if seg.type == "header" %}
+            <h{{ seg.data.level }}
+            class="
+              my-6
+              font-light
+              tracking-tighter
+              text-white
+            ">
+            {{ seg.data.text }}
+            </h{{ seg.data.level }}>
+          {% elif seg.type == "paragraph" %}
+            <p class="pb-6">{{ seg.data.text|stag }}</p>
+          {% elif seg.type == "list" %}
+            {% if seg.data.style == "ordered" %}
+              {% set ls = "ol" %}{% set ls_cls = "px-5 list-decimal" %}
+            {% else %}
+              {% set ls = "ul" %}{% set ls_cls = "px-5 list-disc" %}
+            {% endif %}
+            <{{ ls }} class="{{ ls_cls }}">
+              {% for li in seg.data['items'] %}
+                <li>{{ li|stag }}</li>
+              {% endfor %}
+            </{{ ls }}>
+          {% elif seg.type == "warning" %}
+            <div
+              class="
+                p-4
+                pl-4
+                mb-6
+                italic
+                font-bold
+                tracking-tight
+                text-black
+                bg-yellow-400
+                shadow-glitchBox
+              "
+            >
+              <h3 class="mb-2 lg:text-4xl">{{ seg.data.title }}&nbsp;:</h3>
+              <p>{{ seg.data.message|stag }}</p>
+            </div>
+          {% elif seg.type == "code" %}
+            <div class="
+              mb-6
+              font-thin
+              text-base
+              bg-gray-900
+              tracking-tight
+              shadow-glitchBox
+            ">
+              <code class="block w-full whitespace-pre overflow-x-auto" style="padding: 1rem !important;">{{ seg.data.code|trim }}</code>
+            </div>
+          {% elif seg.type == "delimiter" %}
+            <hr class="my-6"></hr>
+          {% elif seg.type == "raw" %}
+            {{ seg.data.html|safe }}
+          {% elif seg.type == "quote" %}
+            <div
+              class="
+                p-4
+                pl-4
+                mb-6
+                italic
+                font-bold
+                tracking-tight
+                text-black
+                bg-cyan-400
+                shadow-glitchBox
+              "
+            >
+              <h3 class="mb-2 lg:text-4xl">"{{ seg.data.text|stag }}"</h3>
+              <p>-&nbsp;{{ seg.data.caption|stag }}</p>
+            </div>
+          {% elif seg.type == "embed" %}
+            <div class="relative h-0 overflow-hidden max-w-full w-full shadow-glitchBox" style="padding-bottom: 56.25%">
+              <iframe src="{{ seg.data.embed }}" allowfullscreen class="absolute top-0 left-0 w-full h-full"></iframe>
+            </div>
+            {% if seg.data.caption %}
+              <p class="block mb-8 p-4 italic tracking-tighter bg-cyan-400 text-black shadow-glitchBox">{{ seg.data.caption|stag }}</p>
+            {% else %}
+              <div class="mb-8"></div>
+            {% endif %}
+          {% elif seg.type == "table" %}
+            {% set table_content = seg.data["content"] %}
+            <div class="w-full my-5 break-words bg-transparent shadow-glitchBox p-2">
+              <table class="w-full flex flex-row flex-no-wrap overflow-x-scroll table-fixed">
+                  {% if seg.data.withHeadings %}
+                      <thead>
+                        {% set head_elements = table_content[0] %}
+                        {% set table_content = seg.data["content"] | pop1 %}
+                        {% for content in table_content %}
+                          <tr class="bg-cyan-400 flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
+                            {% for elem in head_elements %}
+                                <th class="p-3 text-left border border-cyan-400">{{ elem }}</th>
+                            {% endfor %}
+                          </tr>
+                        {% endfor %}
+                      </thead>
+                  {% endif %}
+                  <tbody class="flex-1 sm:flex-none">
+                      {% for content in table_content %}
+                        <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
+                          {% for elem in content %}
+                              <td class="p-3 border border-cyan-400">{{ elem }}</td>
+                          {% endfor %}
+                        </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+          {% elif seg.type == "checklist" %}
+            {% for citem in seg.data["items"] %}
+                <ul class="list-none">
+                  <li>
+                    {% if citem.checked %}
+                      &#10003;
+                    {% else %}
+                      &#10007;
+                    {% endif %}
+                    {{ citem.text }}
+                  </li>
+                </ul>
+            {% endfor %}
+          {% else %}
+            {{ seg.type }}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div
+        class="
+          w-full
+          px-4
+          mt-12
+          text-lg
+          leading-snug
+          tracking-tight
+          text-white
+          lg:px-5 lg:w-1/4
+        "
+      >
+        <p class="pb-6">
+          Search
+        </p>
+        <p class="pb-6">
+          Recent posts
+        </p>
+
+        <p class="pb-6">
+          Similar posts
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% include '/partials/footer.html' %}
+		<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="{{ request.base_url }}static/tail/highlight/highlight.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('code').forEach((el) => {
+          hljs.highlightElement(el);
+        });
+      });
+    </script>
+    {% block script %}{% endblock %}
+	</body>
+</html>

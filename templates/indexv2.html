@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+		<!-- Primary Meta Tags -->
+    <title>{{ title }}</title>
+    <meta name="title" content="{{ title }}">
+		<meta name="description" content="{{ page_desc }}">
+
+    <!-- Open Graph / Facebook -->
+
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="#">
+		<meta property="og:title" content="{{ title }}">
+		<meta property="og:description" content="{{ page_desc }}">
+		<meta property="og:image" content="#">
+
+		<!-- Twitter -->
+
+		<meta property="twitter:card" content="summary_large_image">
+		<meta property="twitter:url" content="#">
+		<meta property="twitter:title" content="{{ title }}">
+		<meta property="twitter:description" content="{{ page_desc }}">
+		<meta property="twitter:image" content="#">
+
+
+		<link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/tail/css/app.css" />
+	 	<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+			rel="stylesheet">
+			<link href="https://fonts.googleapis.com/css2?family=Mr+Dafoe&display=swap" rel="stylesheet">
+
+			<link rel="preconnect" href="https://fonts.gstatic.com">
+			<link href="https://fonts.googleapis.com/css2?family=Monoton&display=swap" rel="stylesheet">
+	</head>
+	<body class=" bg-gradient-to-r from-gray-700 via-gray-900 to-black">
+
+    {% include '/partials/navigation.html' %}
+
+<div class="w-full overflow-hidden">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1685.86 387.16">
+        <polygon points="1683.97 0.5 1005.34 386.66 645.6 386.66 1.81 0.5 1683.97 0.5" fill="none" stroke="#CE5EAF">
+        </polygon>
+        <path d="M282.17.5,705.55,386.66" fill="none" stroke="#CE5EAF"></path>
+        <path d="M562.53.5l203,386.16" fill="none" stroke="#CE5EAF"></path>
+        <path d="M842.89.5,825.47,386.66" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1123.25.5,885.43,386.66" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1403.61.5,945.39,386.66" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1033.64,370.69h-414" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1071.64,349.69h-488" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1125.64,318.69h-593" fill="none" stroke="#CE5EAF"></path>
+        <path d="M1208.64,270.69h-756" fill="none" stroke="#CE5EAF"></path>
+    </svg>
+</div>
+<section>
+  <div class="container px-5 mx-auto">
+    <div class="flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center h-1/2 lg:-mt-44">
+        <h1
+          class="
+            mx-auto
+            text-5xl
+            leading-none
+            tracking-tight
+            wicked
+            md:-mb-6
+            font-monoton
+            blog
+            lg:text-12xl
+          "
+        >
+          {{ title }}
+        </h1>
+        <span
+          class="
+            text-2xl
+            leading-none
+            text-pink-500
+            transform
+            -skew-y-6
+            lg:ml-auto lg:-mt-16
+            wicked
+            lg:text-10xl
+            font-dafoe
+            md:text-4xl
+          "
+        >
+          Blog</span
+        >
+      </div>
+    </div>
+    <div class="py-8 mt-12">
+      <p
+        class="
+          mx-auto
+          text-base
+          font-medium
+          leading-relaxed
+          text-center text-white
+          lg:w-1/2
+        "
+      >
+        Professional blogs written by enthusiast's for learners
+      </p>
+    </div>
+    <div
+      class="
+        mx-auto
+        transition
+        duration-500
+        ease-in-out
+        transform
+        border-2
+        lg:w-1/2
+        border-cyan-300
+        hover:shadow-glitchBox
+      "
+    >
+    <form action="/admin/subscribe" method="post" x-data="PostForm()" @submit.prevent="submitData">
+      <div
+        class="
+          flex flex-col
+          m-2
+          space-y-3
+          sm:space-y-0 sm:flex-row sm:justify-center
+        "
+      >
+        <input
+          id="email"
+          type="email"
+          class="w-full px-4 py-2 text-white bg-transparent focus:outline-none"
+          placeholder="Email Address"
+          x-model="formData.email"
+          required
+        />
+    
+        <button
+          class="
+            w-full
+            p-3
+            text-xl
+            font-black
+            tracking-widest
+            text-white
+            uppercase
+            transition-all
+            duration-200
+            transform
+            border-2 border-pink-400
+            hover: hover:bg-cyan-300
+            focus:outline-none focus:bg-pink-400
+            hover:text-black
+          "
+        >
+          subscribe
+        </button>
+    </div>
+        <p x-text="message" class="
+        mx-auto
+        text-base
+        font-medium
+        leading-relaxed
+        text-center text-white
+        lg:w-1/2
+      "></p>
+    </form>
+
+    </div>
+  </div>
+</section>
+<section>
+    <div class="container px-5 py-24 mx-auto md:px-10 lg:px-20">
+        <div class="flex flex-wrap px-6 lg:mb-10">
+            <h2 class="mb-4 text-2xl font-medium text-fuchsia-400 lg:text-6xl title-font font-dafoe lg:mb-0">
+                Featured Posts
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 gap-24 mx-auto lg:grid-cols-3">
+            {% for blog in featured %}
+                <div class="">
+                    <div class="h-full overflow-hidden shadow-3xl">
+                    <div class="p-2">
+                        <p class="ml-4 text-xs text-gray-300">{{ blog.published_date }}</p>
+                        <h3
+                        class="mb-8 text-lg leading-relaxed tracking-widest text-white uppercase  lg:text-4xl md:text-3xl"
+                        >
+                        {{ blog.title }}
+                        </h3>
+                        <p
+                        class="mb-3 text-base leading-relaxed text-white  md:text-xl lg:text-base"
+                        >
+                        {{ blog.article_text }}
+                        </p>
+                        {% if blog.full_name %}
+                            <a class="inline-flex items-center mt-2">
+                            <img
+                                alt="avatar"
+                                src="{{ blog.avatar }}"
+                                class="flex-shrink-0 object-cover object-center w-12 h-12 rounded-full "
+                            />
+                            <span class="flex flex-col flex-grow ml-8">
+                                <span class="text-xs font-medium text-white">{{ blog.full_name }}</span>
+                                <span class="text-cyan-300 text-sm tracking-widest mt-0.5 font-dafoe">{{ blog.about }}</span>
+                            </span>
+                            </a>
+                        {% endif %}
+                        <div class="flex flex-wrap items-center mt-8">
+                        <a
+                            href="{{ blog.article_url }}"
+                            class="inline-flex items-center px-6 py-3 text-base font-semibold text-white uppercase transition duration-500 ease-in-out transform border border-white  hover:shadow-glitchBox md:mb-2 lg:mb-0"
+                        >
+                            Read More
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include '/partials/footer.html' %}
+
+		<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+        <script>
+            function PostForm() {
+                return {
+                    formData: {
+                        email: ''
+                    },
+                    message: '',
+                    
+                    submitData() {
+                        this.message = ''
+
+                        fetch(this.$el.action, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            this.message = data.message
+                        })
+                        .catch(() => {
+                            this.message = 'Ooops! Something went wrong!'
+                        })
+                    }
+                }
+            }
+        </script>
+	</body>
+</html>
