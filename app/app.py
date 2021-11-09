@@ -31,7 +31,7 @@ app.add_middleware(
 )
 
 app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET, https_only=Config.HTTPS_ONLY)
-app.add_middleware(GZipMiddleware, minimum_size=256)
+#app.add_middleware(GZipMiddleware, minimum_size=256)
 #if Config.ENV != "LOCAL":
 #    app.add_middleware(HTTPSRedirectMiddleware)
 

@@ -10,6 +10,7 @@ function request(url, typ, data, callback){
     request.addEventListener("error", callback);
     request.open(typ, c_host + url);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    console.log(data);
     request.send(JSON.stringify(data));
 
     var req = null;
