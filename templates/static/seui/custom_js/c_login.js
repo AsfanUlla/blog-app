@@ -34,7 +34,7 @@ $(document).ready(function() {
 
         if($('.ui.form.login').form('is valid')){
 	        const data = new FormData($('.ui.form.login')[0]);
-	        const lvalue = Object.fromEntries(data.entries());
+	        const value = Object.fromEntries(data.entries());
             function l_c(e){
                 if (this.readyState === 4){
                     response = JSON.parse(this.response);
@@ -50,7 +50,7 @@ $(document).ready(function() {
                 }
             }
 
-	        request("/admin/login", 'POST', lvalue, l_c);
+	        request("/admin/login", 'POST', value, l_c);
     	}
 	});
 });
