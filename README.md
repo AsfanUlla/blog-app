@@ -12,3 +12,5 @@
 * move hosts to mongodb and refer them using _id
 * user CRUD ops in admin
 * hosts D ops
+* search
+* recent/related blogs

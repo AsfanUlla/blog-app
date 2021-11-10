@@ -232,6 +232,22 @@
                   </li>
                 </ul>
             {% endfor %}
+          {% elif seg.type == "image" %}
+            <div class="shadow-glitchBox my-8">
+              <img
+                alt="blog-image"
+                src="{{ request.base_url }}{{ seg.data.file.url|jpath }}"
+                class="
+                  flex-shrink-0
+                  object-cover object-center
+                  w-full
+                  h-auto
+                "
+              />
+              {% if seg.data.caption %}
+                <p class="p-4 italic tracking-tighter bg-cyan-400 text-black">{{ seg.data.caption|stag }}</p>
+              {% endif %}
+            </div>
           {% else %}
             {{ seg.type }}
           {% endif %}
@@ -249,7 +265,7 @@
           lg:px-5 lg:w-1/4
         "
       >
-        <p class="pb-6">
+        <!--<p class="pb-6">
           Search
         </p>
         <p class="pb-6">
@@ -258,7 +274,7 @@
 
         <p class="pb-6">
           Similar posts
-        </p>
+        </p>-->
       </div>
     </div>
   </div>
