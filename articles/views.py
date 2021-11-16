@@ -89,7 +89,7 @@ async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None
         site_header=request.state.current_host,
         title=request.state.current_host,
         articles=articles,
-        recent_articles=await recent_articles(),
+        recent_articles=await recent_articles(request),
         next_page=next_url,
         previous_page=prev_url,
         page_desc="Latest technology blogs for beginners and learners"
@@ -225,6 +225,6 @@ async def article(article_slug, request: Request):
         data=article["article_data"],
         tags=article["tags"],
         author=author,
-        recent_articles=await recent_articles(),
+        recent_articles=await recent_articles(request),
     )
     return templates.TemplateResponse("components/article.html", html_content)

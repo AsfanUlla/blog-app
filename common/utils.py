@@ -92,7 +92,7 @@ async def verify_token(request: Request):
     return user, payload
 
 
-async def recent_articles():
+async def recent_articles(request):
     query = dict(
         is_suspended=False,
         published=True
