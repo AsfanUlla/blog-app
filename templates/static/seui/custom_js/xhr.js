@@ -34,3 +34,15 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+function msg(mhdr=false, mbdy){
+    var hdr="";
+    if(mhdr){
+        hdr = "<i class='massive check icon' style='color:green;'></i><br/>SUCCESS";
+    } else {
+        hdr = "<i class='massive x icon icon' style='color:red;'></i><br/>ERROR";
+    }
+    $("#mhdr").html(hdr);
+    $("#mbod").html(mbdy);
+    $('.ui.basic.msg.modal').modal({blurring: true, closable  : true}).modal('show');
+}

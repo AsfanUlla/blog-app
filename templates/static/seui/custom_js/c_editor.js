@@ -114,7 +114,7 @@ $(document).ready(function() {
         $('.ui.form.editor').removeClass('loading');
     }).catch((reason) => {
         $('.ui.form.editor').removeClass('loading');
-        alert('Error loading Editor Contact Admin');
+        msg(false, 'Error loading Editor Contact Admin');
         console.log(`Editor.js initialization failed because of ${reason}`);
     });
 
@@ -175,11 +175,11 @@ $(document).ready(function() {
                                     history.replaceState(response, document.title, "?article="+article_id);
                                 }
                             }
-                            alert(response.message);
+                            msg(response.data["success"], response.message);
                         } else if(this.status >= 400 && this.status < 499){
-                            alert(response.detail);
+                            msg(false, response.detail);
                         } else {
-                            alert("Internal server error");
+                            msg(false, "Internal server error");
                         }
                     }
                     $('.ui.form.editor').removeClass('loading');
@@ -187,7 +187,7 @@ $(document).ready(function() {
                 request("/editor/save", 'POST', value, r_c);
 
             } else{
-                alert("Empty editor");
+                msg(false, "Empty editor");
             }
         }).catch((error) => {
             console.log('Saving failed: ', error);
@@ -204,5 +204,10 @@ $(document).ready(function() {
         window.location.href = '/editor';
     });
     */
+
+    $( "a#mybl" ).click(function(e){
+        e.preventDefault();
+        $('.ui.modal.mybl').modal({closable  : true}).modal('show');
+    });
     
 });

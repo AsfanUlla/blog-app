@@ -34,6 +34,11 @@
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/list.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/header.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/item.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/modal.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/dimmer.min.css">
+                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
             {% endblock %}
          
             <style>
@@ -127,6 +132,9 @@
                     visibility: visible;
                     transform: scaleX(1);
                 }
+                .input.em{
+                    margin: 1.5em auto 1.5em;
+                }
                 @media only screen and (max-width: 700px) {
                     .item.xo{
                         display: none !important;
@@ -189,6 +197,19 @@
 
             <div class="push"></div>
 
+            <div class="ui center aligned secondary very padded vertical segment" id="newsletter">
+                <div class="ui text container">
+                    <form class="ui form subs" method="post">
+                        <div class="field">
+                            <div class="ui fluid big action input em">
+                                <input type="email" name="email" placeholder="Email" required/>
+                                <div class="ui big secondary button subs" type="submit">Subscribe</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div class="ui inverted vertical footer segment">
                 <div class="ui container">
                     <div class="ui stackable inverted divided equal height stackable grid">
@@ -212,7 +233,6 @@
                         -->
                         <div class="seven wide column">
                             <h4 class="ui inverted header">&copy; Linuxmansch</h4>
-                            <p>//about us line</p>
                         </div>
                     </div>
                 </div>
@@ -220,16 +240,73 @@
 
         </div>
 
+        <!--Message Model-->
+        <div class="ui basic msg modal">
+            <div class="ui icon header" id="mhdr">
+                <i class="archive icon"></i>
+                #Status#
+            </div>
+            <div class="content">
+                <center><h2 id="mbod"></h2></center>
+            </div>
+            <div class="actions">
+                <div class="ui basic cancel inverted button">
+                    <i class="remove icon"></i>
+                    Close
+                </div>
+            </div>
+        </div>
+
         {% block jscript %}
             <script src="{{ request.base_url }}static/seui/jquery-3.6.0.min.js" ></script>
             <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/modal.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/dimmer.min.js"></script>
+            <script src="{{ request.base_url }}static/seui/components/transition.min.js"></script>
 
             <script>
                 $(document).ready(function() {
                     $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
                     .sidebar('attach events', '.toc.item');
+
+                    $('.ui.form.subs').form({
+                        fields: {
+                            email: ['email', 'empty']
+                        },
+                        on     : 'blur'
+                    });
+
+                    $(".button.subs").click(function(e){
+                        e.preventDefault();
+                        $(".ui.form.subs").form('validate form');
+                        if($(".ui.form.subs").form('is valid')){
+                            $(this).addClass('disabled loading');
+                            const data = new FormData($(".ui.form.subs")[0]);
+                            const value = Object.fromEntries(data.entries());                        
+
+                            function s_c(e){
+                                if (this.readyState === 4){
+                                    response = JSON.parse(this.response);
+                                    if (this.status < 299){
+                                        console.log(response);
+                                        msg(response.data["success"], response["message"]);
+                                    } else if(this.status >= 400 && this.status < 499){
+                                        msg(false, response.detail);
+                                    } else {
+                                        msg(false, "Internal server error");
+                                    }
+                                }
+                                $(".button.subs").removeClass('disabled loading');
+                            }
+
+                            request("/admin/subscribe", 'POST', value, s_c);
+
+                        }
+                    })
                 });
             </script>
         {% endblock %}

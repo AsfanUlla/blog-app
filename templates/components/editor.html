@@ -2,7 +2,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block site_header %}{{ site_header }}{% endblock %}
 {% block nav_items %}
-    {{ super() }}
+    <a href="#!" class="item" id="mybl">My blogs</a>
     <a href="/admin" class="item">Admin</a>
     <a href="/admin/logout" class="item">Logout</a>
 {% endblock %}
@@ -11,9 +11,8 @@
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/checkbox.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/dropdown.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
 {% endblock %}
 
 {% block style %}
@@ -58,13 +57,57 @@
             </div>
         </form>
     </div>
+
+    <!--My Blog Modal-->
+    <div class="ui large modal mybl">
+        <div class="header">My Blogs</div>
+        <div class="scrolling content">
+            <table class="ui unstackable compact celled table">
+                <thead>
+                    <tr>
+                        {% for keys in my_blogs[0] %}
+                            {% if keys == 'actions' %}
+                                <th>Actions</th>
+                            {% else %}
+                                <th>{{ keys|upper }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blog in my_blogs %}
+                        <tr>
+                            {% for key, value in blog.items() %}
+                                {% if key == "actions" %}
+                                    <td class="collapsing">
+                                        <div class="ui small icon buttons">
+                                            <a class="ui basic blue button host_edit" href="{{ value.editor_url }}"><i class="edit icon"></i></a>
+                                            <a class="ui basic green button host_trash" href="{{ value.preview_url }}"><i class="eye icon"></i></a>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td> {{ value|lower|trim }} </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="actions">
+            <div class="ui cancel secondary button">
+                <i class="remove icon"></i>
+                Close
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block jscript %}
 {{ super() }}
     <script src="{{ request.base_url }}static/seui/components/checkbox.min.js"></script>
     <script src="{{ request.base_url }}static/seui/components/dropdown.min.js"></script>
-    <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
     <script src="{{ request.base_url }}static/seui/components/transition.min.js"></script>
 
     <script src="{{ request.base_url }}static/seui/editorjs/editor.js"></script>
@@ -84,7 +127,6 @@
     <script src="{{ request.base_url }}static/seui/editorjs/table.js"></script>
     <script src="{{ request.base_url }}static/seui/editorjs/underline.js"></script>
 
-    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
     <script>
         //$(document).ready(function() {
             var article_doc = {{ article_doc|tojson }};

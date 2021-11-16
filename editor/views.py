@@ -235,13 +235,52 @@ async def editor(request: Request, article: Optional[PyObjectId] = None, payload
     hosts = []
     for host in host_doc:
         hosts.append(host["host"])
+
+    mqyery = dict(
+        author_id=payload[1]["user_id"]
+    )
+    if payload[0]["is_su_admin"]:
+        mqyery = {}
+
+    my_bl = await MongoInterface.find_all(
+        collection_name=collections["articles"],
+        query=mqyery,
+        exclude=dict(
+            _id=1,
+            title=1,
+            published=1,
+            hosts=1,
+            is_suspended=1,
+            published_date=1
+        ),
+        sort=[('_id', -1)]
+    )
+
+    my_blogs=[]
+    if my_bl:
+        for bl in my_bl:
+            
+            if bl.get("published_date") and type(bl.get("published_date")) == datetime.datetime:
+                bl["published_date"] = bl["published_date"].date().isoformat()
+            else:
+                bl["published_date"] = "NA"
+
+            
+            bl["actions"] = dict(
+                editor_url=request.state.current_host_url + "/editor?article=" + str(bl["_id"]),
+                preview_url=request.state.current_host_url + "/editor/preview?article=" + str(bl["_id"])
+            )
+            del bl["_id"]
+            my_blogs.append(bl)
+
     html_content = dict(
         request=request,
         site_header=request.state.current_host,
         title="Editor",
         hosts=hosts,
         article_doc=article_doc,
-        preview_url=preview_url
+        preview_url=preview_url,
+        my_blogs=my_blogs
     )
     return templates.TemplateResponse("components/editor.html", html_content)
 
