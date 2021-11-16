@@ -90,3 +90,24 @@ async def verify_token(request: Request):
     except JWTError:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Illegal token")
     return user, payload
+
+
+async def recent_articles():
+    query = dict(
+        is_suspended=False,
+        published=True
+    )
+    if Config.ENV != 'LOCAL':
+        query["hosts"] = request.state.current_host_url
+    articles = await MongoInterface.find_all(
+        collection_name=collections["articles"],
+        query=query,
+        sort=[('_id', -1)],
+        list=10,
+        exclude=dict(
+            title=True,
+            slug=True
+        )
+    )
+
+    return articles

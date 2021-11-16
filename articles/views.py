@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException, status, Header, Request
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.encoders import jsonable_encoder
-from common.utils import templates, strip_tags
+from common.utils import templates, strip_tags, recent_articles
 from common.views import MongoInterface, PyObjectId
 from common.db import collections
 from config import Config
@@ -13,7 +13,7 @@ from bson import ObjectId
 router = APIRouter()
 
 
-@router.get("/blog", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None, next_page: Optional[PyObjectId] = None):
     query = dict(
         is_suspended=False,
@@ -48,12 +48,12 @@ async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None
             for block in article["article_data"]["blocks"]:
                 if block["type"] == "paragraph":
                     article_text = block["data"]["text"]
-                    article_text = article_text[:200] + ' ...'
+                    article_text = article_text[:400] + ' ...'
                     break
 
             adata["article_text"] = article_text
 
-            if article["author_id"]:
+            """if article["author_id"]:
                 author = await MongoInterface.find_or_none(
                     collection_name=collections["users"],
                     query=dict(
@@ -71,7 +71,7 @@ async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None
                         author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
                     if not author.get("about"):
                         author["about"] = "shy"
-                    adata.update(author)
+                    adata.update(author)"""
 
             articles.append(adata)
 
@@ -79,25 +79,26 @@ async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None
     prev_url = None
 
     if last_id:
-        next_url = request.state.current_host_url + "/blog?next_page=" + str(last_id)
+        next_url = request.state.current_host_url + "?next_page=" + str(last_id)
 
     if first_id:
-        prev_url =  request.state.current_host_url + "/blog?previous_page=" + str(first_id)
+        prev_url =  request.state.current_host_url + "?previous_page=" + str(first_id)
 
     html_content = dict(
         request=request,
         site_header=request.state.current_host,
         title=request.state.current_host,
         articles=articles,
+        recent_articles=await recent_articles(),
         next_page=next_url,
         previous_page=prev_url,
         page_desc="Latest technology blogs for beginners and learners"
     )
 
-    return templates.TemplateResponse("blog.html", html_content)
+    return templates.TemplateResponse("components/home.html", html_content)
 
 
-@router.get("/", response_class=HTMLResponse)
+"""@router.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     query = dict(
         is_suspended=False,
@@ -174,7 +175,7 @@ async def index(request: Request):
         page_desc="Latest technology blogs for beginners and learners",
         featured=articles
     )
-    return templates.TemplateResponse("indexv2.html", html_content)
+    return templates.TemplateResponse("components/home.html", html_content)"""
 
 
 @router.get("/{article_slug}", response_class=HTMLResponse)
@@ -198,7 +199,7 @@ async def article(article_slug, request: Request):
     )
 
     author = None
-    if article.get("author_id"):
+    """if article.get("author_id"):
         author = await MongoInterface.find_or_none(
             collection_name=collections["users"],
             query=dict(
@@ -215,7 +216,7 @@ async def article(article_slug, request: Request):
             if not author.get("avatar"):
                 author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
             if not author.get("about"):
-                author["about"] = "shy"
+                author["about"] = "shy" """
 
     html_content = dict(
         request=request,
@@ -223,6 +224,7 @@ async def article(article_slug, request: Request):
         title=article["title"],
         data=article["article_data"],
         tags=article["tags"],
-        author=author
+        author=author,
+        recent_articles=await recent_articles(),
     )
-    return templates.TemplateResponse("blog-post.html", html_content)
+    return templates.TemplateResponse("components/article.html", html_content)

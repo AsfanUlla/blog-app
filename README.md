@@ -13,4 +13,5 @@
 * user CRUD ops in admin
 * hosts D ops
 * search
-* recent/related blogs
+* about
+* contact us

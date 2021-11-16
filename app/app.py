@@ -48,7 +48,7 @@ async def get_robots_txt():
 async def get_open_api_endpoint(payload: dict = Depends(verify_token)):
     if not payload[0]["is_su_admin"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
-    return JSONResponse(get_openapi(title="BlogAPI", version=1, routes=app.routes))
+    return JSONResponse(get_openapi(title="BlogAPI", version="1", routes=app.routes))
 
 @app.get("/docs")
 async def get_documentation(payload: dict = Depends(verify_token)):

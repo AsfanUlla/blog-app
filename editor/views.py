@@ -115,7 +115,7 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
     )
 
     author = None
-    if article_doc.get("author_id"):
+    """if article_doc.get("author_id"):
         author = await MongoInterface.find_or_none(
             collection_name=collections["users"],
             query=dict(
@@ -132,7 +132,7 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
             if not author.get("avatar"):
                 author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
             if not author.get("about"):
-                author["about"] = "shy"
+                author["about"] = "shy" """
     
     html_content = dict(
         request=request,
@@ -142,10 +142,11 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
         tags=article_doc["tags"],
         pub=article_doc["published"],
         author=author,
-        editor_url=request.state.current_host_url + "/editor?article=" + str(article)
+        editor_url=request.state.current_host_url + "/editor?article=" + str(article),
+        preview=True
     )
 
-    return templates.TemplateResponse("blog-preview.html", html_content)
+    return templates.TemplateResponse("components/article.html", html_content)
 
 
 @router.post("/upload_image")

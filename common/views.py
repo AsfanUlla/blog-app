@@ -60,16 +60,13 @@ class MongoInterface:
         return await db[collection_name].find_one(query, exclude)
 
     @staticmethod
-    async def find_all(collection_name, query=None, exclude=None, sort=None, list=1000):
+    async def find_all(collection_name, query=None, exclude=None, sort=None, list=None):
         db = await get_db()
         document = []
         if query is None:
             query = {}
         if exclude is None:
             exclude = {}
-        exclude.update(dict(
-            cd=False
-        ))
         if sort:
             doc = await db[collection_name].find(query, exclude, sort=sort).to_list(list)
         else:

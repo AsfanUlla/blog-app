@@ -10,8 +10,12 @@
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/embed.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/atelier-lakeside-light.min.css">
+    <!--
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/github.min.css">
+    -->
 
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/3024.min.css">
 {% endblock %}
 
 {% block style %}
@@ -20,128 +24,192 @@
         color: grey;
         font-weight: lighter;
     }
+    .prec{
+        background-color: #EBF8FF;
+        border-radius: .28571429rem;
+        box-shadow: 0 0 0 1px #276f86 inset,0 0 0 0 transparent !important;
+        padding: 5px;
+    }
+    code {
+        display: block;
+        white-space: pre;
+    }
+    .grid.bl{
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .ui.message > .list.icon {
+        position: absolute;
+        margin: 0;
+        top: .78575em;
+        right: .5em;
+        opacity: .7;
+        -webkit-transition: opacity .1s ease;
+        transition: opacity .1s ease;
+    }
+    a.hl{
+        color: #4183c4 !important;
+        font-size: 1.1em;
+        font-weight: bold;
+        word-break: break-word;
+    }
 {% endblock %}
 
 {% block site_header %}{{ site_header }}{% endblock %}
-{% block content %}
-    <div class="ui container raised padded clearing text segment" id="main_space">
-        <div class="left ui rail">
-            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 277px;">
-            <h3 class="ui header">Ad space</h3>
-            <img>
-            </div>
-        </div>
-        <div class="right ui rail">
-            <div class="ui sticky" style="width: 272px !important; height: 262.683px !important; left: 1359px;">
-            <h3 class="ui header">Ad space</h3>
-            <img>
-            </div>
-        </div>
-        {% for seg in data.blocks %}
-            {% if seg.type == "header" %}
-                    <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
-                    <a class="header_link" href="#{{ seg.data.text|jslug }}">
-                        &nbsp;<i class="linkify icon"></i>
-                    </a>
-                    </h{{ seg.data.level }}>
-            {% elif seg.type == "paragraph" %}
-                <p>{{ seg.data.text|safe }}</p>
-            {% elif seg.type == "warning" %}
-                <div class="ui small warning message">
-                    <div class="header">
-                        {{ seg.data.title }}
-                    </div>
-                    <p>{{ seg.data.message|safe }}</p>
-                </div>
-            {% elif seg.type == "code" %}
-                <pre>
-                    <code>
-                        {{ seg.data.code|trim }}
-                    </code>
-                </pre>
-            {% elif seg.type == "delimiter" %}
-                <div class="ui divider"></div>
-            {% elif seg.type == "raw" %}
-                {{ seg.data.html|safe }}
-            {% elif seg.type == "quote" %}
-                <div class="ui small message">
-                    <p>{{ seg.data.text|safe }}</p>
-                    <h4 class="ui right aligned header">
-                        - {{ seg.data.caption|safe }}
-                    </h4>
-                </div>
-            {% elif seg.type == "image" %}
-                <div class="ui vertical segment">
-                    <img class="ui rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
-                    <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
-                </div>
-            {% elif seg.type == "checklist" %}
-                {% for citem in seg.data["items"] %}
-                    <div class="ui list">
-                        <div class="item">
-                            {% if citem.checked %}
-                                <i class="check circle icon"></i>
-                            {% else %}
-                                <i class="circle outline icon"></i>
-                            {% endif %}
-                            {{ citem.text }}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% elif seg.type == "list" %}
-                {% if seg.data.style == "ordered" %}
-                    {% set ls = "ol" %}
-                {% else %}
-                    {% set ls = "ul" %}
-                {% endif %}
-                <{{ ls }} class="ui list">
-                    {% for li in seg.data['items'] %}
-                        <li>{{ li|safe }}</li>
-                    {% endfor %}
-                </{{ ls }}>
-            {% elif seg.type == "embed" %}
-                <div class="ui vertical segment">
-                    <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
-                    <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
-                </div>
-            {% elif seg.type == "table" %}
-                {% set table_content = seg.data["content"] %}
-                <table class="ui celled table">
-                    {% if seg.data.withHeadings %}
-                        <thead>
-                            <tr>
-                                {% for elem in table_content[0] %}
-                                    <th>{{ elem }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        {% set table_content = seg.data["content"] | pop1 %}
-                    {% endif %}
-                    <tbody>
-                        {% for content in table_content %}
-                            <tr>
-                                {% for elem in content %}
-                                    <td>{{ elem }}</td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+{% block nav_items %}
+    {% if preview %}
+        <a href="#!" class="item" id="pub">
+            {% if pub %}
+                UnPublish
             {% else %}
-                {{ seg.type }}
+                Publish
             {% endif %}
-        {% endfor %}
-        {% if tags %}
-            <hr class="ui divider" />
-            <div class="ui secondary segment">
-                <i class="ui header">Tags:&nbsp;</i>
-                {% for tag in tags.split(',') %}
-                    <div class="ui black label">
-                        {{ tag }}
+        </a>
+        <a href="{{ editor_url }}" class="item">Editor</a>
+        <a href=#!"" class="item" id="discard">Discard</a>
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui doubling stackable three column grid bl" id="main_space">
+        <div class="left floated left aligned four wide column">
+            <div class="ui basic segment">
+                <div class="ui info message">
+                    <i class="large list alternate icon"></i>
+                    <div class="header">
+                      Table of contents
                     </div>
+                    <ul class="list">
+                        {% for teg in data.blocks %}
+                            {% if teg.type == "header" %}
+                                <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                  </div>
+            </div>
+        </div>
+        <div class="left aligned eight wide column">
+            <div class="ui container clearing basic segment">
+                {% for seg in data.blocks %}
+                    {% if seg.type == "header" %}
+                            <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
+                            <a class="header_link" href="#{{ seg.data.text|jslug }}">
+                                &nbsp;<i class="linkify icon"></i>
+                            </a>
+                            </h{{ seg.data.level }}>
+                    {% elif seg.type == "paragraph" %}
+                        <p>{{ seg.data.text|safe }}</p>
+                    {% elif seg.type == "warning" %}
+                        <div class="ui small warning message">
+                            <div class="header">
+                                {{ seg.data.title }}
+                            </div>
+                            <p>{{ seg.data.message|safe }}</p>
+                        </div>
+                    {% elif seg.type == "code" %}
+                        <div class="prec">
+                            <code>{{ seg.data.code|trim }}</code>
+                        </div>
+                    {% elif seg.type == "delimiter" %}
+                        <div class="ui divider"></div>
+                    {% elif seg.type == "raw" %}
+                        {{ seg.data.html|safe }}
+                    {% elif seg.type == "quote" %}
+                        <div class="ui small message">
+                            <p>{{ seg.data.text|safe }}</p>
+                            <h4 class="ui right aligned header">
+                                - {{ seg.data.caption|safe }}
+                            </h4>
+                        </div>
+                    {% elif seg.type == "image" %}
+                        <div class="ui vertical segment">
+                            <img class="ui rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
+                            <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                        </div>
+                    {% elif seg.type == "checklist" %}
+                        {% for citem in seg.data["items"] %}
+                            <div class="ui list">
+                                <div class="item">
+                                    {% if citem.checked %}
+                                        <i class="check circle icon"></i>
+                                    {% else %}
+                                        <i class="circle outline icon"></i>
+                                    {% endif %}
+                                    {{ citem.text }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% elif seg.type == "list" %}
+                        {% if seg.data.style == "ordered" %}
+                            {% set ls = "ol" %}
+                        {% else %}
+                            {% set ls = "ul" %}
+                        {% endif %}
+                        <{{ ls }} class="ui list">
+                            {% for li in seg.data['items'] %}
+                                <li>{{ li|safe }}</li>
+                            {% endfor %}
+                        </{{ ls }}>
+                    {% elif seg.type == "embed" %}
+                        <div class="ui vertical segment">
+                            <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
+                            <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                        </div>
+                    {% elif seg.type == "table" %}
+                        {% set table_content = seg.data["content"] %}
+                        <table class="ui celled table">
+                            {% if seg.data.withHeadings %}
+                                <thead>
+                                    <tr>
+                                        {% for elem in table_content[0] %}
+                                            <th>{{ elem }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                {% set table_content = seg.data["content"] | pop1 %}
+                            {% endif %}
+                            <tbody>
+                                {% for content in table_content %}
+                                    <tr>
+                                        {% for elem in content %}
+                                            <td>{{ elem }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        {{ seg.type }}
+                    {% endif %}
                 {% endfor %}
             </div>
-        {% endif %}
+        </div>
+        <div class="right floated left aligned four wide column">
+            {% if tags %}
+                <div class="ui secondary segment">
+                    <i class="ui header">Tags:&nbsp;</i>
+                    {% for tag in tags.split(',') %}
+                        <div class="ui black label">
+                            {{ tag }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if recent_articles %}
+                <div class="ui padded basic segment">
+                    <h3 class="ui header">Recent Posts</h3>
+                    <div class="ui list">
+                        {% for raticle in recent_articles %}
+                            <a class="icon item hl" href="/{{ raticle.slug }}">{{ raticle.title }} <i class="small linkify icon"></i></a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
@@ -153,9 +221,9 @@
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
     <script>
         $(document).ready(function() {
-            code_hak = $('pre code').text().trim();
-            $('pre code').text(code_hak);
-            hljs.highlightAll();
+            document.querySelectorAll('code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
 
             $('.ui.embed').embed();
 
@@ -173,4 +241,69 @@
             });
         });
     </script>
+{% if preview %}
+    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
+    <script>
+        $(document).ready(function() {
+            article_id = getParameterByName('article', window.location.href);
+            $("a#pub").click(function(e){
+                e.preventDefault();
+                value = {
+                            "published": true,
+                            "edit": true,
+                            "article_id": article_id
+                        }
+                function r_c(e){
+                    if (this.readyState === 4){
+                        response = JSON.parse(this.response);
+                        if (this.status < 299){
+                            if(response.data["success"]){
+                                if($("a#pub").html().trim() == "Publish"){
+                                    $("a#pub").html("UnPublish");
+                                    alert("article Published");
+                                }else{
+                                    $("a#pub").html("Publish");
+                                    alert("article UnPublished");
+                                }
+                            }
+                        } else if(this.status >= 400 && this.status < 499){
+                            alert(response.detail);
+                        } else {
+                            alert("Internal server error");
+                        }
+                    }
+                }
+                request("/editor/save", 'POST', value, r_c);
+            });
+        
+            $("a#discard").click(function(e){
+                e.preventDefault();
+                if(confirm("Delete Article")){
+                    value = {
+                        "article_id": article_id
+                    }
+                    function d_c(e){
+                        if (this.readyState === 4){
+                            response = JSON.parse(this.response);
+                            if (this.status < 299){
+                                if(response.data["success"]){
+                                    alert(response.message);
+                                    window.location.replace(response.data["redirect_url"]);
+                                } else{
+                                    alert("Error Occures");
+                                }
+                            } else if(this.status >= 400 && this.status < 499){
+                                alert(response.detail);
+                            } else {
+                                alert("Internal server error");
+                            }
+                        }
+                    }
+                    request("/editor/discard", 'POST', value, d_c);
+                }
+            });
+        
+        });
+    </script>
+{% endif %}
 {% endblock %}
