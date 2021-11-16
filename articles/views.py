@@ -14,7 +14,13 @@ router = APIRouter()
 
 
 @router.get("/", response_class=HTMLResponse)
-async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None, next_page: Optional[PyObjectId] = None):
+async def all_blogs(
+    request: Request, 
+    previous_page: Optional[PyObjectId] = None, 
+    next_page: Optional[PyObjectId] = None, 
+    search: Optional[str] = None
+):
+
     query = dict(
         is_suspended=False,
         published=True
@@ -27,7 +33,8 @@ async def all_blogs(request: Request, previous_page: Optional[PyObjectId] = None
         query=query,
         last_id=next_page,
         first_id=previous_page,
-        page_size=9
+        page_size=9,
+        search=search
     )
     
     articles = []

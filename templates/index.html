@@ -153,12 +153,28 @@
     </head>
     <body>
         <!-- top bar -->
-        <div class="ui top sidebar">
+        <div class="ui top sidebar mob">
             <div class="ui borderless topb menu">
                 <div class="ui container">
                     <div class="ui right floated item">
                         {{ self.nav_items() }}
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- top search -->
+        <div class="ui top sidebar se">
+            <div class="ui basic segment">
+                <div class="ui container">
+                    <form method="get" action="/">
+                        <div class="ui fluid action large input">
+                            <input type="text" name="search" placeholder="Search..." required/>
+                            <button class="ui icon button" type="submit">
+                                <i class="large search icon"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -173,8 +189,8 @@
                     </a>
                     <div class="right item xo">
                         {% block nav_items %}
-                        <a class="icon item"><i class="search icon"></i></a>
-                        <a class="active item">Home</a>
+                        <a class="icon item se"><i class="search icon"></i></a>
+                        <a class="item" href="/">Home</a>
                         <a class="item">About</a>
                         <a class="item">Contact us</a>
                         {% endblock %}
@@ -270,8 +286,11 @@
 
             <script>
                 $(document).ready(function() {
-                    $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
+                    $('.ui.sidebar.mob').sidebar('setting', 'transition', 'overlay')
                     .sidebar('attach events', '.toc.item');
+
+                    $('.ui.sidebar.se').sidebar('setting', 'transition', 'overlay')
+                    .sidebar('attach events', '.item.se');
 
                     $('.ui.form.subs').form({
                         fields: {

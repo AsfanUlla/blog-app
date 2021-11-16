@@ -135,7 +135,7 @@ class MongoInterface:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Invalid query type")
 
     @staticmethod
-    async def id_pagination(collection_name, query=None, exclude=None, page_size=10, last_id=None, first_id=None):
+    async def id_pagination(collection_name, query=None, exclude=None, page_size=10, last_id=None, first_id=None, search=None):
         db = await get_db()
         if query is None:
             query = {}
@@ -146,6 +146,25 @@ class MongoInterface:
         ))
 
         sort = [('_id', -1)]
+
+        if search and search != "":
+            query.update(
+                {
+                    "$text": {
+                        "$search": search
+                    }
+                }
+            )
+            exclude.update(
+                {
+                    "score": {
+                        "$meta": "textScore"
+                    }
+                }
+            )
+            sort=[('score', {'$meta': 'textScore'}), ('_id', -1)]
+            data = await db[collection_name].find(query, exclude, sort=sort).to_list(None)
+            return data, None, None
 
         if objectid.ObjectId.is_valid(first_id):
             queryf = query.copy()
