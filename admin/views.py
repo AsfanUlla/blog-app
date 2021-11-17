@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Body, HTTPException, status, Depends
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
-from admin.models import AddUserSchema, UserLoginSchema, AddHostSchema, Subs
+from admin.models import *
 from common.models import SchemalessResponse, EmailSchema
 from fastapi.encoders import jsonable_encoder
 from common.views import MongoInterface
-from common.utils import get_password_hash, verify_password, create_access_token, verify_token, templates
+from common.utils import get_password_hash, verify_password, create_access_token, verify_token, templates, send_mail
 from datetime import timedelta, datetime
 from common.db import collections
 from starlette.requests import Request
@@ -186,6 +186,27 @@ async def subscribe(subs: Subs):
             success=True
         ),
         message="We are sorry to see you leave"
+    )
+    return JSONResponse(jsonable_encoder(response))
+
+
+@router.post("/contact")
+async def contact(data: ContactSchema):
+    subject = "Contacted By (Blog Contact Form)"
+    body = "Name: " + data.name + "\nEmail: " + data.email + "\nMessage: " + data.message + "\n"
+    admin_mails = ["asfanulla@gmail.com", "ashishbishnoi18@gmail.com"]
+    await send_mail(
+        EmailSchema(
+            sub=subject,
+            email_to=admin_mails,
+            body=body
+        )
+    )
+    response = SchemalessResponse(
+        data=dict(
+            success=True
+        ),
+        message="Thank you for contacting us we will soon get back to you"
     )
     return JSONResponse(jsonable_encoder(response))
 

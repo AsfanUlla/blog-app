@@ -23,3 +23,9 @@ class AddHostSchema(BaseModel):
 
 class Subs(BaseModel):
     email: EmailStr
+
+
+class ContactSchema(BaseModel):
+    name: str
+    email: EmailStr
+    message: str

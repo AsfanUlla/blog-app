@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/image.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/message.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/transition.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/embed.min.css">
     
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/atelier-lakeside-light.min.css">
@@ -223,7 +222,6 @@
 
 {% block jscript %}
 {{ super() }}
-    <script src="{{ request.base_url }}static/seui/components/transition.min.js"></script>
     <script src="{{ request.base_url }}static/seui/components/embed.min.js"></script>
 
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
@@ -250,7 +248,6 @@
         });
     </script>
 {% if preview %}
-    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
     <script>
         $(document).ready(function() {
             article_id = getParameterByName('article', window.location.href);

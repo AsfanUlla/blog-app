@@ -6,11 +6,13 @@ from jose import JWTError, jwt
 from config import Config
 from common.db import collections
 from common.views import MongoInterface, RediectException, MLStripper
+from common.models import EmailSchema
 from bson import ObjectId
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from slugify import slugify
 from urllib.parse import urlparse
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -44,6 +46,22 @@ templates.env.filters['pop1'] = pop1
 templates.env.filters['jpath'] = jpath
 templates.env.filters['mdate'] = mil_date
 templates.env.filters['stag'] = strip_tags
+
+
+mail_conf = ConnectionConfig(
+    MAIL_USERNAME=Config.MAIL_USERNAME,
+    MAIL_PASSWORD=Config.MAIL_PASSWORD,
+    MAIL_FROM=Config.MAIL_USERNAME,
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_FROM_NAME="tech linuxmansch",
+    MAIL_TLS=True,
+    MAIL_SSL=False,
+    USE_CREDENTIALS=True,
+    TEMPLATE_FOLDER='./templates/email'
+)
+
+mail = FastMail(mail_conf)
 
 
 def verify_password(plain_password, hashed_password):
@@ -111,3 +129,21 @@ async def recent_articles(request):
     )
 
     return articles
+
+
+async def send_mail(data: EmailSchema):
+    if data.template_name:
+        message = MessageSchema(
+            subject=data.sub,
+            recipients=data.email_to,
+            template_body=data.dict().get('body'),
+            subtype='html',
+        )
+        await mail.send_message(message, template_name=data.template_name)
+    
+    message = MessageSchema(
+        subject=data.sub,
+        recipients=data.email_to,
+        body=data.body
+    )
+    await mail.send_message(message)

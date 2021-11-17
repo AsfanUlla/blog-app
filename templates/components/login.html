@@ -2,14 +2,8 @@
 {% block title %}{{ title }}{% endblock %}
 {% block site_header %}{{ site_header }}{% endblock %}
 
-{% block stylesheet %}
-    {{ super() }}
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/form.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/input.min.css">
-{% endblock %}
-
 {% block content %}
-    <div class="ui container raised padded clearing segment" id="main_space">
+    <div class="ui text container padded clearing basic segment" id="main_space">
         <form class="ui form login" method="POST">
             <div class="field">
             <label>Email</label>
@@ -19,14 +13,12 @@
             <label>Password</label>
             <input type="password" name="passwd" placeholder="Password" required/>
             </div>
-            <button class="ui button" id="login_s">Submit</button>
+            <button class="ui secondary button" id="login_s">Submit</button>
         </form>
     </div>
 {% endblock %}
 
 {% block jscript %}
 {{ super() }}
-    <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
-    <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
     <script src="{{ request.base_url }}static/seui/custom_js/c_login.js"></script>
 {% endblock %}

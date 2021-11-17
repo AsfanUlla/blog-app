@@ -11,5 +11,5 @@ class SchemalessResponse(BaseModel):
 class EmailSchema(BaseModel):
     sub: str
     email_to: List[EmailStr]
-    body: Dict[str, Any]
-    template_name: str = 'default_email.html'
+    body: Any
+    template_name: str = None

@@ -13,6 +13,18 @@ from bson import ObjectId
 router = APIRouter()
 
 
+@router.get("/about", response_class=HTMLResponse)
+async def about_contact(request: Request):
+    html_content = dict(
+        request=request,
+        site_header=request.state.current_host,
+        title="About/Contact",
+        page_desc="Latest technology blogs for beginners and learners"
+    )
+
+    return templates.TemplateResponse("components/about.html", html_content)
+
+
 @router.get("/", response_class=HTMLResponse)
 async def all_blogs(
     request: Request, 
