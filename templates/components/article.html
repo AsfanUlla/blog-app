@@ -53,6 +53,10 @@
         font-weight: bold;
         word-break: break-word;
     }
+    .image.bl{
+        width: 100% !important;
+        height: auto !important;
+    }
 {% endblock %}
 
 {% block site_header %}{{ site_header }}{% endblock %}
@@ -102,13 +106,13 @@
                             </a>
                             </h{{ seg.data.level }}>
                     {% elif seg.type == "paragraph" %}
-                        <p>{{ seg.data.text|safe }}</p>
+                        <p>{{ seg.data.text|stag }}</p>
                     {% elif seg.type == "warning" %}
                         <div class="ui small warning message">
                             <div class="header">
                                 {{ seg.data.title }}
                             </div>
-                            <p>{{ seg.data.message|safe }}</p>
+                            <p>{{ seg.data.message|stag }}</p>
                         </div>
                     {% elif seg.type == "code" %}
                         <div class="prec">
@@ -120,15 +124,17 @@
                         {{ seg.data.html|safe }}
                     {% elif seg.type == "quote" %}
                         <div class="ui small message">
-                            <p>{{ seg.data.text|safe }}</p>
+                            <p>{{ seg.data.text|stag }}</p>
                             <h4 class="ui right aligned header">
-                                - {{ seg.data.caption|safe }}
+                                - {{ seg.data.caption|stag }}
                             </h4>
                         </div>
                     {% elif seg.type == "image" %}
                         <div class="ui vertical segment">
-                            <img class="ui rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
-                            <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                            <img class="ui rounded image bl" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
+                            {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
+                                <div class="ui bottom attached label">{{ seg.data.caption|stag }}</div>
+                            {% endif %}
                         </div>
                     {% elif seg.type == "checklist" %}
                         {% for citem in seg.data["items"] %}
@@ -151,13 +157,15 @@
                         {% endif %}
                         <{{ ls }} class="ui list">
                             {% for li in seg.data['items'] %}
-                                <li>{{ li|safe }}</li>
+                                <li>{{ li|stag }}</li>
                             {% endfor %}
                         </{{ ls }}>
                     {% elif seg.type == "embed" %}
                         <div class="ui vertical segment">
                             <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
-                            <div class="ui bottom attached label">{{ seg.data.caption|safe }}</div>
+                            {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
+                                <div class="ui bottom attached label">{{ seg.data.caption|stag }}</div>
+                            {% endif %}
                         </div>
                     {% elif seg.type == "table" %}
                         {% set table_content = seg.data["content"] %}
@@ -260,16 +268,16 @@
                             if(response.data["success"]){
                                 if($("a#pub").html().trim() == "Publish"){
                                     $("a#pub").html("UnPublish");
-                                    alert("article Published");
+                                    msg(true, "Article Published");
                                 }else{
                                     $("a#pub").html("Publish");
-                                    alert("article UnPublished");
+                                    msg(true, "Article Unpublished");
                                 }
                             }
                         } else if(this.status >= 400 && this.status < 499){
-                            alert(response.detail);
+                            msg(false, response.detail);
                         } else {
-                            alert("Internal server error");
+                            msg(false, "Internal server error");
                         }
                     }
                 }
@@ -287,15 +295,15 @@
                             response = JSON.parse(this.response);
                             if (this.status < 299){
                                 if(response.data["success"]){
-                                    alert(response.message);
+                                    msg(true, response.message);
                                     window.location.replace(response.data["redirect_url"]);
                                 } else{
-                                    alert("Error Occures");
+                                    msg(false, response.message);
                                 }
                             } else if(this.status >= 400 && this.status < 499){
-                                alert(response.detail);
+                                msg(false, response.detail);
                             } else {
-                                alert("Internal server error");
+                                msg(false, "Internal server error");
                             }
                         }
                     }

@@ -37,6 +37,7 @@
 {% block content %}
     <div class="ui doubling stackable two column grid container" id="main_space">
         <div class="left floated left aligned ten wide column">
+            {% if articles %}
             {% for article in articles %}
                 <div class="ui padded basic segment">
                     <h1 class="ui header">{{ article.title }}</h1>
@@ -46,6 +47,9 @@
                 </div>
                 <div class="ui divider"></div>
             {% endfor %}
+            {% else %}
+                <p class="article_text">No Results Found</p>
+            {% endif %}
         </div>
         <div class="right floated left aligned five wide column">
             {% if recent_articles %}
