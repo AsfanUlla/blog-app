@@ -10,6 +10,7 @@ from common.db import collections
 from starlette.requests import Request
 from bson import ObjectId
 from pydantic import EmailStr
+import urllib.parse
 
 
 router = APIRouter()
@@ -93,7 +94,7 @@ async def add_user(user: AddUserSchema, payload: dict = Depends(verify_token)):
 async def add_host(_host: AddHostSchema, payload: dict = Depends(verify_token)):
     if not payload[0]["is_su_admin"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
-    _host.host = str(_host.host).strip("/")
+    _host.host = urllib.parse.urlparse(str(_host.host)).netloc.strip('www.')
     host_doc = await MongoInterface.find_or_none(
             collection_name=collections['hosts'],
             query=dict(
