@@ -217,11 +217,12 @@ class CurrentHost(BaseHTTPMiddleware):
         request = Request(scope, receive)
         request.state.current_host = request.base_url.hostname.strip('www.').split('.')[0].capitalize()
         request.state.current_host_url = str(request.base_url).strip("/")
+        request.state.current_domain = request.base_url.hostname.strip('www.')
         if Config().ENV != "LOCAL":
             await MongoInterface.find_or_404(
                 collection_name=collections["hosts"],
                 query=dict(
-                    host=request.base_url.hostname.strip('www.')
+                    host=request.state.current_domain
                 ),
                 exclude=dict(
                     _id=1

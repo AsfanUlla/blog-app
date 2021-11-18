@@ -38,7 +38,7 @@ async def all_blogs(
         published=True
     )
     if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_host_url
+        query["hosts"] = request.state.current_domain
 
     articles_doc, first_id, last_id = await MongoInterface.id_pagination(
         collection_name=collections["articles"],
@@ -125,7 +125,7 @@ async def index(request: Request):
         featured=True
     )
     if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_host_url
+        query["hosts"] = request.state.current_domain
     featured_article = await MongoInterface.find_all(
         collection_name=collections["articles"],
         query=query,
@@ -206,7 +206,7 @@ async def article(article_slug, request: Request):
         published=True
         )
     if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_host_url
+        query["hosts"] = request.state.current_domain
     article = await MongoInterface.find_or_404(
         collection_name=collections["articles"],
         query=query,
