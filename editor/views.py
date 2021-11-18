@@ -203,7 +203,7 @@ async def editor(request: Request, article: Optional[PyObjectId] = None, payload
     if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     article_doc = None
-    preview_url = "#!"
+    preview_url = ""
     if article:
         article_doc = await MongoInterface.find_or_404(
             collection_name=collections["articles"],

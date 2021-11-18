@@ -22,7 +22,6 @@
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/site.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/reset.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sidebar.min.css">
-                <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sticky.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/menu.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/segment.min.css">
                 <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/container.min.css">
@@ -134,14 +133,6 @@
                 }
                 .input.em{
                     margin: 1.5em auto 1.5em;
-                }
-                h1:before, h3:before, h4:before, h5:before, h6:before, h2:before {
-                    display: block;
-                    content: "";
-                    margin-top: -85px;
-                    height: 85px;
-                    visibility: hidden;
-                    pointer-events: none;
                 }
                 @media only screen and (max-width: 700px) {
                     .item.xo{
@@ -283,10 +274,10 @@
 
         {% block jscript %}
             <script src="{{ request.base_url }}static/seui/jquery-3.6.0.min.js" ></script>
+            <script src="{{ request.base_url }}static/seui/custom_js/hash_handler.js"></script>
             <script src="{{ request.base_url }}static/seui/custom_js/xhr.js"></script>
             <script src="{{ request.base_url }}static/seui/components/sidebar.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/site.min.js"></script>
-            <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/form.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/modal.min.js"></script>
             <script src="{{ request.base_url }}static/seui/components/dimmer.min.js"></script>

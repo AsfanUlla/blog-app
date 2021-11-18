@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/message.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/embed.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sticky.min.css">
     
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/atelier-lakeside-light.min.css">
     <!--
@@ -56,7 +57,7 @@
 
 {% block nav_items %}
     {% if preview %}
-        <a href="#!" class="item" id="pub">
+        <a href="" class="item" id="pub">
             {% if pub %}
                 UnPublish
             {% else %}
@@ -64,7 +65,7 @@
             {% endif %}
         </a>
         <a href="{{ editor_url }}" class="item">Editor</a>
-        <a href=#!"" class="item" id="discard">Discard</a>
+        <a href="" class="item" id="discard">Discard</a>
     {% else %}
         {{ super() }}
     {% endif %}
@@ -73,23 +74,25 @@
 {% block content %}
     <div class="ui doubling stackable three column grid bl" id="main_space">
         <div class="left floated left aligned four wide column">
-            <div class="ui basic segment">
-                <div class="ui info message">
-                    <i class="large list alternate icon"></i>
-                    <div class="header">
-                      Table of contents
+            <div class="ui sticky ta">
+                <div class="ui basic segment">
+                    <div class="ui info message">
+                        <i class="large list alternate icon"></i>
+                        <div class="header">
+                        Table of contents
+                        </div>
+                        <ul class="list">
+                            {% for teg in data.blocks %}
+                                {% if teg.type == "header" %}
+                                    <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <ul class="list">
-                        {% for teg in data.blocks %}
-                            {% if teg.type == "header" %}
-                                <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
         </div>
-        <div class="left aligned eight wide column">
+        <div class="left aligned eight wide column" id="acontent">
             <div class="ui container clearing basic segment">
                 {% for seg in data.blocks %}
                     {% if seg.type == "header" %}
@@ -235,6 +238,7 @@
 {% block jscript %}
 {{ super() }}
     <script src="{{ request.base_url }}static/seui/components/embed.min.js"></script>
+    <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
 
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
     <script>
@@ -256,6 +260,23 @@
                 document.execCommand("copy");
 
                 $(this).find('i').transition('pulse');
+            });
+
+            if($(window).width() >= 780){
+                $('.ui.sticky.ta').sticky({
+                    offset : 80,
+                    context: '#acontent'
+                });
+            }
+            $(window).on('resize', function() {
+                if($(window).width() >= 780){
+                    $('.ui.sticky.ta').sticky({
+                        offset : 80,
+                        context: '#acontent'
+                    });
+                } else{
+                    $('.ui.sticky.ta').sticky('destroy');
+                }
             });
         });
     </script>
