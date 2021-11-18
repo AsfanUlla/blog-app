@@ -46,12 +46,6 @@
         -webkit-transition: opacity .1s ease;
         transition: opacity .1s ease;
     }
-    a.hl{
-        color: #4183c4 !important;
-        font-size: 1.1em;
-        font-weight: bold;
-        word-break: break-word;
-    }
     .image.bl{
         width: 100% !important;
         height: auto !important;
@@ -214,7 +208,7 @@
                     </div>
                     <ul class="list">
                         {% for raticle in recent_articles %}
-                            <li><a class="hl" href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
+                            <li><a href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
