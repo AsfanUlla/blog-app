@@ -1,6 +1,12 @@
 {% extends "index.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block site_header %}{{ site_header }}{% endblock %}
+
+{% block stylesheet %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/message.min.css">
+{% endblock %}
+
 {% block style %}
     {{ super() }}
     .article_text{
@@ -18,15 +24,12 @@
         font-size: 1.2em;
         font-weight: bold;
     }
-    a.pg{
+    .segment.pg{
         font-size: 1.1em;
         font-weight: lighter;
-    }
-    a.hl{
-        color: #4183c4 !important;
-        font-size: 1.1em;
-        font-weight: bold;
-        word-break: break-word;
+        margin: 0 0 auto 0 !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
     }
     .label.date{
         background-color: #f8ffff !important;
@@ -53,35 +56,43 @@
         </div>
         <div class="right floated left aligned five wide column">
             {% if recent_articles %}
-                <div class="ui padded basic segment">
-                    <h3 class="ui header">Recent Posts</h3>
-                    <div class="ui list">
-                        {% for raticle in recent_articles %}
-                            <a class="icon item hl" href="/{{ raticle.slug }}">{{ raticle.title }} <i class="small linkify icon"></i></a>
-                        {% endfor %}
+            <div class="ui basic segment">
+                <div class="ui message">
+                    <div class="header">
+                        Recent Posts
                     </div>
+                    <ul class="list">
+                        {% for raticle in recent_articles %}
+                            <li><a class="hl" href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            </div>
             {% endif %}
             {% if featured_sites %}
-                <div class="ui padded basic segment">
-                    <h3 class="ui header">Featured Sites</h3>
-                    <div class="ui list">
-                        {% for site in featured_sites %}
-                        <a class="item hl" href="{{ site.url }}">{{ site.name }}</a>
-                        {% endfor %}
+            <div class="ui basic segment">
+                <div class="ui message">
+                    <div class="header">
+                        Featured Sites
                     </div>
+                    <ul class="list">
+                        {% for site in featured_sites %}
+                            <li><a href="{{ site.url }}">{{ site.name }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            </div>
             {% endif %}
         </div>
-        <div class="doubling four column row">
-            <div class="left floated left aligned column">
-                {% if previous_page %}
-                    <a class="pg" href="{{ previous_page }}"><i class="angle left icon"></i>Previous Page</a>
+        <div class="doubling ten wide column">
+            <div class="ui basic clearing right floated segment pg">
+                {% if next_page %}
+                    <a href="{{ next_page }}">Next Page<i class="angle right icon"></i></a>
                 {% endif %}
             </div>
-            <div class="left floated right aligned column">
-                {% if next_page %}
-                    <a class="pg" href="{{ next_page }}">Next Page<i class="angle right icon"></i></a>
+            <div class="ui basic clearing left floated segment pg">
+                {% if previous_page %}
+                    <a href="{{ previous_page }}"><i class="angle left icon"></i>Previous Page</a>
                 {% endif %}
             </div>
         </div>

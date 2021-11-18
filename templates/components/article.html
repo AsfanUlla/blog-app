@@ -92,7 +92,7 @@
                             {% endif %}
                         {% endfor %}
                     </ul>
-                  </div>
+                </div>
             </div>
         </div>
         <div class="left aligned eight wide column">
@@ -197,7 +197,7 @@
         </div>
         <div class="right floated left aligned four wide column">
             {% if tags %}
-                <div class="ui secondary segment">
+                <div class="ui secondary segment" style="margin: auto 15px auto 15px;">
                     <i class="ui header">Tags:&nbsp;</i>
                     {% for tag in tags.split(',') %}
                         <div class="ui black label">
@@ -207,24 +207,32 @@
                 </div>
             {% endif %}
             {% if recent_articles %}
-                <div class="ui padded basic segment">
-                    <h3 class="ui header">Recent Posts</h3>
-                    <div class="ui list">
-                        {% for raticle in recent_articles %}
-                            <a class="icon item hl" href="/{{ raticle.slug }}">{{ raticle.title }} <i class="small linkify icon"></i></a>
-                        {% endfor %}
+            <div class="ui basic segment">
+                <div class="ui message">
+                    <div class="header">
+                        Recent Posts
                     </div>
+                    <ul class="list">
+                        {% for raticle in recent_articles %}
+                            <li><a class="hl" href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            </div>
             {% endif %}
             {% if featured_sites %}
-                <div class="ui padded basic segment">
-                    <h3 class="ui header">Featured Sites</h3>
-                    <div class="ui list">
-                        {% for site in featured_sites %}
-                        <a class="item hl" href="{{ site.url }}">{{ site.name }}</a>
-                        {% endfor %}
+            <div class="ui basic segment">
+                <div class="ui message">
+                    <div class="header">
+                        Featured Sites
                     </div>
+                    <ul class="list">
+                        {% for site in featured_sites %}
+                            <li><a href="{{ site.url }}">{{ site.name }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            </div>
             {% endif %}
         </div>
     </div>
