@@ -116,7 +116,7 @@ async def recent_articles(request):
         published=True
     )
     if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_host_url
+        query["hosts"] = request.state.current_domain
     articles = await MongoInterface.find_all(
         collection_name=collections["articles"],
         query=query,
