@@ -66,9 +66,9 @@
                 <div class="ui padded basic segment">
                     <h3 class="ui header">Featured Sites</h3>
                     <div class="ui list">
-                        <a class="item hl" href="#">site1</a>
-                        <a class="item hl" href="#">site2</a>
-                        <a class="item hl" href="#">site3</a>
+                        {% for site in featured_sites %}
+                        <a class="item hl" href="{{ site.url }}">{{ site.name }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             {% endif %}

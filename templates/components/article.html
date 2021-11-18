@@ -216,6 +216,16 @@
                     </div>
                 </div>
             {% endif %}
+            {% if featured_sites %}
+                <div class="ui padded basic segment">
+                    <h3 class="ui header">Featured Sites</h3>
+                    <div class="ui list">
+                        {% for site in featured_sites %}
+                        <a class="item hl" href="{{ site.url }}">{{ site.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

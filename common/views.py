@@ -247,3 +247,51 @@ class MLStripper(HTMLParser):
         self.text.write(d)
     def get_data(self):
         return self.text.getvalue()
+
+
+class CommonMethods:
+
+    @staticmethod
+    async def recent_articles(request):
+        query = dict(
+            is_suspended=False,
+            published=True
+        )
+        if Config.ENV != 'LOCAL':
+            query["hosts"] = request.state.current_domain
+        articles = await MongoInterface.find_all(
+            collection_name=collections["articles"],
+            query=query,
+            sort=[('_id', -1)],
+            list=10,
+            exclude=dict(
+                title=True,
+                slug=True
+            )
+        )
+
+        return articles
+
+    @staticmethod
+    async def featured_sites():
+        sites = await MongoInterface.find_all(
+            collection_name=collections["hosts"],
+            query=dict(
+                enabled=True
+            ),
+            exclude=dict(
+                host=True
+            )
+        )
+
+        fs = []
+
+        for site in sites:
+            sd = dict(
+                url="https://"+site["host"]+"/",
+                name=site["host"]
+            )
+
+            fs.append(sd)
+
+        return fs

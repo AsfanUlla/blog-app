@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Body, HTTPException, status, Header, Request
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.encoders import jsonable_encoder
-from common.utils import templates, strip_tags, recent_articles
-from common.views import MongoInterface, PyObjectId
+from common.utils import templates, strip_tags
+from common.views import MongoInterface, PyObjectId, CommonMethods
 from common.db import collections
 from config import Config
 from datetime import datetime
@@ -108,10 +108,11 @@ async def all_blogs(
         site_header=request.state.current_host,
         title=request.state.current_host,
         articles=articles,
-        recent_articles=await recent_articles(request),
+        recent_articles=await CommonMethods.recent_articles(request),
         next_page=next_url,
         previous_page=prev_url,
-        page_desc="Latest technology blogs for beginners and learners"
+        page_desc="Latest technology blogs for beginners and learners",
+        featured_sites=await CommonMethods.featured_sites()
     )
 
     return templates.TemplateResponse("components/home.html", html_content)
@@ -244,6 +245,7 @@ async def article(article_slug, request: Request):
         data=article["article_data"],
         tags=article["tags"],
         author=author,
-        recent_articles=await recent_articles(request),
+        recent_articles=await CommonMethods.recent_articles(request),
+        featured_sites=await CommonMethods.featured_sites()
     )
     return templates.TemplateResponse("components/article.html", html_content)

@@ -110,27 +110,6 @@ async def verify_token(request: Request):
     return user, payload
 
 
-async def recent_articles(request):
-    query = dict(
-        is_suspended=False,
-        published=True
-    )
-    if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_domain
-    articles = await MongoInterface.find_all(
-        collection_name=collections["articles"],
-        query=query,
-        sort=[('_id', -1)],
-        list=10,
-        exclude=dict(
-            title=True,
-            slug=True
-        )
-    )
-
-    return articles
-
-
 async def send_mail(data: EmailSchema):
     if data.template_name:
         message = MessageSchema(
