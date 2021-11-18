@@ -7,7 +7,7 @@ class SaveArticle(BaseModel):
     title: str = ""
     article_data: dict = {}
     published: bool = False
-    hosts: List[HttpUrl] = []
+    hosts: List[str] = []
     tags: Optional[str] = None
     edit: bool = False
     article_id: Optional[PyObjectId] = None
