@@ -29,7 +29,6 @@
         border-radius: .28571429rem;
         box-shadow: 0 0 0 1px #276f86 inset,0 0 0 0 transparent !important;
         padding: 5px;
-        margin: 15px auto;
     }
     code {
         display: block;
@@ -98,6 +97,7 @@
         </div>
         <div class="left aligned eight wide column" id="acontent">
             <div class="ui container clearing basic segment">
+                <h1>{{ self.title() }}</h1>
                 {% for seg in data.blocks %}
                     {% if seg.type == "header" %}
                             <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
@@ -106,7 +106,7 @@
                             </a>
                             </h{{ seg.data.level }}>
                     {% elif seg.type == "paragraph" %}
-                        <p>{{ seg.data.text|stag }}</p>
+                        <p>{{ seg.data.text|safe }}</p>
                     {% elif seg.type == "warning" %}
                         <div class="ui small warning message">
                             <div class="header">
@@ -115,8 +115,10 @@
                             <p>{{ seg.data.message|stag }}</p>
                         </div>
                     {% elif seg.type == "code" %}
-                        <div class="prec">
-                            <code>{{ seg.data.code|trim }}</code>
+                        <div class="ui basic segment">
+                            <div class="prec">
+                                <code>{{ seg.data.code|trim }}</code>
+                            </div>
                         </div>
                     {% elif seg.type == "delimiter" %}
                         <div class="ui divider"></div>
@@ -124,7 +126,7 @@
                         {{ seg.data.html|safe }}
                     {% elif seg.type == "quote" %}
                         <div class="ui small message">
-                            <p>{{ seg.data.text|stag }}</p>
+                            <p>{{ seg.data.text|safe }}</p>
                             <h4 class="ui right aligned header">
                                 - {{ seg.data.caption|stag }}
                             </h4>
@@ -133,7 +135,7 @@
                         <div class="ui basic segment">
                             <img class="ui rounded image bl" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
                             {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
-                                <div class="ui bottom attached label">{{ seg.data.caption|stag }}</div>
+                                <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
                             {% endif %}
                         </div>
                     {% elif seg.type == "checklist" %}
@@ -145,7 +147,7 @@
                                     {% else %}
                                         <i class="circle outline icon"></i>
                                     {% endif %}
-                                    {{ citem.text }}
+                                    {{ citem.text|safe }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -157,14 +159,14 @@
                         {% endif %}
                         <{{ ls }} class="ui list">
                             {% for li in seg.data['items'] %}
-                                <li>{{ li|stag }}</li>
+                                <li>{{ li|safe }}</li>
                             {% endfor %}
                         </{{ ls }}>
                     {% elif seg.type == "embed" %}
-                        <div class="ui vertical segment">
+                        <div class="ui basic segment">
                             <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
                             {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
-                                <div class="ui bottom attached label">{{ seg.data.caption|stag }}</div>
+                                <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
                             {% endif %}
                         </div>
                     {% elif seg.type == "table" %}
@@ -184,7 +186,7 @@
                                 {% for content in table_content %}
                                     <tr>
                                         {% for elem in content %}
-                                            <td>{{ elem }}</td>
+                                            <td>{{ elem|safe }}</td>
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
