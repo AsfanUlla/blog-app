@@ -36,6 +36,9 @@
         box-shadow: 0 0 0 1px #a9d5de inset,0 0 0 0 transparent !important;
         color: #276f86 !important;
     }
+    h1.hh{
+        margin-top: 20px !important;
+    }
 {% endblock %}
 {% block content %}
     <div class="ui doubling stackable two column grid container" id="main_space">
@@ -43,9 +46,9 @@
             {% if articles %}
             {% for article in articles %}
                 <div class="ui padded basic segment">
-                    <h1 class="ui header">{{ article.title }}</h1>
+                    <h1 class="ui header hh">{{ article.title }}</h1>
                     <div class="ui top right attached label date">{{ article.published_date }}</div>
-                    <p class="article_text">{{ article.article_text|safe }}</p>
+                    <p class="article_text">{{ article.article_text|stag }}</p>
                     <a class="more" href="{{ article.article_url }}">Read More <i class="small angle double right icon"></i></a>
                 </div>
                 <div class="ui divider"></div>
