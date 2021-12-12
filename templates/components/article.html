@@ -11,10 +11,7 @@
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/embed.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sticky.min.css">
     
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/atelier-lakeside-light.min.css">
-    <!--
-    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/github.min.css">
-    -->
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/black-metal-dark-funeral.min.css">    
 
 {% endblock %}
 
@@ -23,12 +20,6 @@
     .header_link{
         color: grey;
         font-weight: lighter;
-    }
-    .prec{
-        background-color: #EBF8FF;
-        border-radius: .28571429rem;
-        box-shadow: 0 0 0 1px #276f86 inset,0 0 0 0 transparent !important;
-        padding: 5px;
     }
     code {
         display: block;
@@ -47,9 +38,9 @@
         -webkit-transition: opacity .1s ease;
         transition: opacity .1s ease;
     }
-    .image.bl{
-        width: 100% !important;
-        height: auto !important;
+    .bl{
+        margin: 3em auto !important;
+        padding: 0px !important;
     }
     .ui.sticky.ta{
         z-index: auto !important;
@@ -70,6 +61,12 @@
         background-color: #ADD8E6;
         color: #000000;
         font-weight: lighter;
+    }
+    .rc {
+        border-radius: .3125em !important;
+    }
+    .metal-bg {
+        background-color: #080404 !important;
     }
 {% endblock %}
 
@@ -132,10 +129,8 @@
                             <p>{{ seg.data.message|stag }}</p>
                         </div>
                     {% elif seg.type == "code" %}
-                        <div class="ui basic segment">
-                            <div class="prec">
-                                <code>{{ seg.data.code|trim }}</code>
-                            </div>
+                        <div class="ui inverted segment metal-bg">
+                            <code>{{ seg.data.code|trim }}</code>
                         </div>
                     {% elif seg.type == "delimiter" %}
                         <div class="ui divider"></div>
@@ -149,8 +144,8 @@
                             </h4>
                         </div>
                     {% elif seg.type == "image" %}
-                        <div class="ui basic segment">
-                            <img class="ui rounded image bl" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
+                        <div class="ui basic segment bl">
+                            <img class="ui fluid centered rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
                             {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
                                 <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
                             {% endif %}
@@ -180,8 +175,8 @@
                             {% endfor %}
                         </{{ ls }}>
                     {% elif seg.type == "embed" %}
-                        <div class="ui basic segment">
-                            <div class="ui embed" data-url="{{ seg.data.embed }}"></div>
+                        <div class="ui basic segment bl">
+                            <div class="ui rounded embed rc" data-url="{{ seg.data.embed }}"></div>
                             {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
                                 <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
                             {% endif %}
@@ -218,12 +213,17 @@
         <div class="right floated left aligned four wide column">
             {% if tags %}
                 <div class="ui secondary segment" style="margin: auto 15px auto 15px;">
-                    <i class="ui header">Tags:&nbsp;</i>
-                    {% for tag in tags.split(',') %}
-                        <div class="ui black label">
-                            {{ tag }}
-                        </div>
-                    {% endfor %}
+                    <div class="ui horizontal list" >
+                        {% for tag in tags.split(',') %}
+                            <div class="item">
+                                <a href="#" target="_blank">
+                                    <div class="ui black label">
+                                        <i class="hashtag icon"></i>{{ tag|trim }}
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
             {% if recent_articles %}
@@ -266,24 +266,6 @@
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
     <script>
         $(document).ready(function() {
-            document.querySelectorAll('code').forEach((el) => {
-                hljs.highlightElement(el);
-            });
-
-            $('.ui.embed').embed();
-
-            $('.header_link').click(function(e){
-                e.preventDefault();
-                var copyText = $(this).prop('href');
-                document.addEventListener('copy', function(e) {
-                    e.clipboardData.setData('text/plain', copyText);
-                    e.preventDefault();
-                }, true);
-
-                document.execCommand("copy");
-
-                $(this).find('i').transition('pulse');
-            });
 
             if($(window).width() >= 780){
                 $('.ui.sticky.ta').sticky({
@@ -301,6 +283,26 @@
                     $('.ui.sticky.ta').sticky('destroy');
                 }
             });
+
+            $('.header_link').click(function(e){
+                e.preventDefault();
+                var copyText = $(this).prop('href');
+                document.addEventListener('copy', function(e) {
+                    e.clipboardData.setData('text/plain', copyText);
+                    e.preventDefault();
+                }, true);
+
+                document.execCommand("copy");
+
+                $(this).find('i').transition('pulse');
+            });
+
+            document.querySelectorAll('code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+
+            $('.ui.embed').embed();
+
         });
     </script>
 {% if preview %}

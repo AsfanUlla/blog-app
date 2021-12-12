@@ -44,5 +44,5 @@ function msg(mhdr=false, mbdy){
     }
     $("#mhdr").html(hdr);
     $("#mbod").html(mbdy);
-    $('.ui.basic.msg.modal').modal({blurring: true, closable  : true}).modal('show');
+    $('.ui.basic.msg.modal').modal({closable  : true}).modal('show');
 }
