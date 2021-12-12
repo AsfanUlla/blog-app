@@ -215,9 +215,7 @@ async def redirect(request: Request, exc: RediectException):
 class CurrentHost(BaseHTTPMiddleware):
     async def __call__(self, scope, receive, send) -> None:
         request = Request(scope, receive)
-        request.state.current_host = Config.HOST_ALIAS.get(
-            request.base_url.hostname.strip('www.').split('.')[0],
-            request.base_url.hostname.strip('www.').split('.')[0]).capitalize()
+        request.state.current_host = request.base_url.hostname.strip('www.').split('.')[0].capitalize()
         request.state.current_host_url = str(request.base_url).strip("/")
         request.state.current_domain = request.base_url.hostname.strip('www.')
         if Config().ENV != "LOCAL":

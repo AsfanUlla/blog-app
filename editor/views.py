@@ -136,7 +136,7 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
     
     html_content = dict(
         request=request,
-        site_header=request.state.current_host,
+        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
         title=article_doc["title"],
         data=article_doc["article_data"],
         tags=article_doc["tags"],
@@ -275,7 +275,7 @@ async def editor(request: Request, article: Optional[PyObjectId] = None, payload
 
     html_content = dict(
         request=request,
-        site_header=request.state.current_host,
+        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
         title="Editor",
         hosts=hosts,
         article_doc=article_doc,

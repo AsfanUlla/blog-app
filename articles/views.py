@@ -17,7 +17,7 @@ router = APIRouter()
 async def about_contact(request: Request):
     html_content = dict(
         request=request,
-        site_header=request.state.current_host,
+        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
         title="About/Contact",
         page_desc="Latest technology blogs for beginners and learners"
     )
@@ -105,7 +105,7 @@ async def all_blogs(
 
     html_content = dict(
         request=request,
-        site_header=request.state.current_host,
+        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
         title=request.state.current_host,
         articles=articles,
         recent_articles=await CommonMethods.recent_articles(request),
@@ -240,7 +240,7 @@ async def article(article_slug, request: Request):
 
     html_content = dict(
         request=request,
-        site_header=request.state.current_host,
+        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
         title=article["title"],
         data=article["article_data"],
         tags=article["tags"],
