@@ -68,6 +68,12 @@
     .metal-bg {
         background-color: #080404 !important;
     }
+    #main_space{
+        margin-top: 5em !important;
+    }
+    .ttle{
+        font-size: 3em;
+    }
 {% endblock %}
 
 {% block site_header %}{{ site_header }}{% endblock %}
@@ -88,172 +94,180 @@
     {% endif %}
 {% endblock %}
 
+{% block hero %}{% endblock %}
+
 {% block content %}
-    <div class="ui doubling stackable three column grid bl" id="main_space">
-        <div class="left floated left aligned four wide column">
-            <div class="ui sticky ta">
+    <div id="main_space">
+        <div class="ui basic segment">
+            <div class="ui container">
+                <h1 class="ttle">{{ self.title() }}</h1>
+            </div>
+        </div>
+        <div class="ui doubling stackable three column grid">
+            <div class="left floated left aligned four wide column">
+                <div class="ui sticky ta">
+                    <div class="ui basic segment">
+                        <div class="ui info message">
+                            <i class="large list alternate icon"></i>
+                            <div class="header">
+                            Table of contents
+                            </div>
+                            <ul class="list">
+                                {% for teg in data.blocks %}
+                                    {% if teg.type == "header" %}
+                                        <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left aligned eight wide column" id="acontent">
+                <div class="ui container clearing basic segment">
+                    {% for seg in data.blocks %}
+                        {% if seg.type == "header" %}
+                                <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
+                                <a class="header_link" href="#{{ seg.data.text|jslug }}">
+                                    &nbsp;<i class="linkify icon"></i>
+                                </a>
+                                </h{{ seg.data.level }}>
+                        {% elif seg.type == "paragraph" %}
+                            <p>{{ seg.data.text|safe }}</p>
+                        {% elif seg.type == "warning" %}
+                            <div class="ui small warning message">
+                                <div class="ui header">
+                                    {{ seg.data.title }}
+                                </div>
+                                {{ seg.data.message|stag }}
+                            </div>
+                        {% elif seg.type == "code" %}
+                            <div class="ui inverted segment metal-bg">
+                                <code>{{ seg.data.code|trim }}</code>
+                            </div>
+                        {% elif seg.type == "delimiter" %}
+                            <div class="ui divider"></div>
+                        {% elif seg.type == "raw" %}
+                            {{ seg.data.html|safe }}
+                        {% elif seg.type == "quote" %}
+                            <div class="ui small message">
+                                <p>{{ seg.data.text|safe }}</p>
+                                <h4 class="ui right aligned header">
+                                    - {{ seg.data.caption|stag }}
+                                </h4>
+                            </div>
+                        {% elif seg.type == "image" %}
+                            <div class="ui basic segment bl">
+                                <img class="ui fluid centered rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
+                                {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
+                                    <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
+                                {% endif %}
+                            </div>
+                        {% elif seg.type == "checklist" %}
+                            {% for citem in seg.data["items"] %}
+                                <div class="ui list">
+                                    <div class="item">
+                                        {% if citem.checked %}
+                                            <i class="check circle icon"></i>
+                                        {% else %}
+                                            <i class="circle outline icon"></i>
+                                        {% endif %}
+                                        {{ citem.text|safe }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% elif seg.type == "list" %}
+                            {% if seg.data.style == "ordered" %}
+                                {% set ls = "ol" %}
+                            {% else %}
+                                {% set ls = "ul" %}
+                            {% endif %}
+                            <{{ ls }} class="ui list">
+                                {% for li in seg.data['items'] %}
+                                    <li>{{ li|safe }}</li>
+                                {% endfor %}
+                            </{{ ls }}>
+                        {% elif seg.type == "embed" %}
+                            <div class="ui basic segment bl">
+                                <div class="ui rounded embed rc" data-url="{{ seg.data.embed }}"></div>
+                                {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
+                                    <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
+                                {% endif %}
+                            </div>
+                        {% elif seg.type == "table" %}
+                            {% set table_content = seg.data["content"] %}
+                            <table class="ui celled table">
+                                {% if seg.data.withHeadings %}
+                                    <thead>
+                                        <tr>
+                                            {% for elem in table_content[0] %}
+                                                <th>{{ elem }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    {% set table_content = seg.data["content"] | pop1 %}
+                                {% endif %}
+                                <tbody>
+                                    {% for content in table_content %}
+                                        <tr>
+                                            {% for elem in content %}
+                                                <td>{{ elem|safe }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            {{ seg.type }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="right floated left aligned four wide column">
+                {% if tags %}
+                    <div class="ui secondary segment" style="margin: auto 15px auto 15px;">
+                        <div class="ui horizontal list" >
+                            {% for tag in tags.split(',') %}
+                                <div class="item">
+                                    <a href="/?search={{ tag|trim }}" target="_blank">
+                                        <div class="ui black label">
+                                            <i class="hashtag icon"></i>{{ tag|trim }}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if recent_articles %}
                 <div class="ui basic segment">
-                    <div class="ui info message">
-                        <i class="large list alternate icon"></i>
+                    <div class="ui message">
                         <div class="header">
-                        Table of contents
+                            Recent Posts
                         </div>
                         <ul class="list">
-                            {% for teg in data.blocks %}
-                                {% if teg.type == "header" %}
-                                    <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
-                                {% endif %}
+                            {% for raticle in recent_articles %}
+                                <li><a href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="left aligned eight wide column" id="acontent">
-            <div class="ui container clearing basic segment">
-                <h1>{{ self.title() }}</h1>
-                {% for seg in data.blocks %}
-                    {% if seg.type == "header" %}
-                            <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
-                            <a class="header_link" href="#{{ seg.data.text|jslug }}">
-                                &nbsp;<i class="linkify icon"></i>
-                            </a>
-                            </h{{ seg.data.level }}>
-                    {% elif seg.type == "paragraph" %}
-                        <p>{{ seg.data.text|safe }}</p>
-                    {% elif seg.type == "warning" %}
-                        <div class="ui small warning message">
-                            <div class="header">
-                                {{ seg.data.title }}
-                            </div>
-                            <p>{{ seg.data.message|stag }}</p>
+                {% endif %}
+                {% if featured_sites %}
+                <div class="ui basic segment">
+                    <div class="ui message">
+                        <div class="header">
+                            Featured Sites
                         </div>
-                    {% elif seg.type == "code" %}
-                        <div class="ui inverted segment metal-bg">
-                            <code>{{ seg.data.code|trim }}</code>
-                        </div>
-                    {% elif seg.type == "delimiter" %}
-                        <div class="ui divider"></div>
-                    {% elif seg.type == "raw" %}
-                        {{ seg.data.html|safe }}
-                    {% elif seg.type == "quote" %}
-                        <div class="ui small message">
-                            <p>{{ seg.data.text|safe }}</p>
-                            <h4 class="ui right aligned header">
-                                - {{ seg.data.caption|stag }}
-                            </h4>
-                        </div>
-                    {% elif seg.type == "image" %}
-                        <div class="ui basic segment bl">
-                            <img class="ui fluid centered rounded image" src="{{ request.base_url }}{{ seg.data.file.url|jpath }}">
-                            {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
-                                <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
-                            {% endif %}
-                        </div>
-                    {% elif seg.type == "checklist" %}
-                        {% for citem in seg.data["items"] %}
-                            <div class="ui list">
-                                <div class="item">
-                                    {% if citem.checked %}
-                                        <i class="check circle icon"></i>
-                                    {% else %}
-                                        <i class="circle outline icon"></i>
-                                    {% endif %}
-                                    {{ citem.text|safe }}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% elif seg.type == "list" %}
-                        {% if seg.data.style == "ordered" %}
-                            {% set ls = "ol" %}
-                        {% else %}
-                            {% set ls = "ul" %}
-                        {% endif %}
-                        <{{ ls }} class="ui list">
-                            {% for li in seg.data['items'] %}
-                                <li>{{ li|safe }}</li>
+                        <ul class="list">
+                            {% for site in featured_sites %}
+                                <li><a href="{{ site.url }}">{{ site.name }}</a></li>
                             {% endfor %}
-                        </{{ ls }}>
-                    {% elif seg.type == "embed" %}
-                        <div class="ui basic segment bl">
-                            <div class="ui rounded embed rc" data-url="{{ seg.data.embed }}"></div>
-                            {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
-                                <div class="ui top right attached label">{{ seg.data.caption|stag }}</div>
-                            {% endif %}
-                        </div>
-                    {% elif seg.type == "table" %}
-                        {% set table_content = seg.data["content"] %}
-                        <table class="ui celled table">
-                            {% if seg.data.withHeadings %}
-                                <thead>
-                                    <tr>
-                                        {% for elem in table_content[0] %}
-                                            <th>{{ elem }}</th>
-                                        {% endfor %}
-                                    </tr>
-                                </thead>
-                                {% set table_content = seg.data["content"] | pop1 %}
-                            {% endif %}
-                            <tbody>
-                                {% for content in table_content %}
-                                    <tr>
-                                        {% for elem in content %}
-                                            <td>{{ elem|safe }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        {{ seg.type }}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        <div class="right floated left aligned four wide column">
-            {% if tags %}
-                <div class="ui secondary segment" style="margin: auto 15px auto 15px;">
-                    <div class="ui horizontal list" >
-                        {% for tag in tags.split(',') %}
-                            <div class="item">
-                                <a href="#" target="_blank">
-                                    <div class="ui black label">
-                                        <i class="hashtag icon"></i>{{ tag|trim }}
-                                    </div>
-                                </a>
-                            </div>
-                        {% endfor %}
+                        </ul>
                     </div>
                 </div>
-            {% endif %}
-            {% if recent_articles %}
-            <div class="ui basic segment">
-                <div class="ui message">
-                    <div class="header">
-                        Recent Posts
-                    </div>
-                    <ul class="list">
-                        {% for raticle in recent_articles %}
-                            <li><a href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                {% endif %}
             </div>
-            {% endif %}
-            {% if featured_sites %}
-            <div class="ui basic segment">
-                <div class="ui message">
-                    <div class="header">
-                        Featured Sites
-                    </div>
-                    <ul class="list">
-                        {% for site in featured_sites %}
-                            <li><a href="{{ site.url }}">{{ site.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
