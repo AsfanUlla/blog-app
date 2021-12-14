@@ -1,7 +1,4 @@
 {% extends "index.html" %}
-{% block title %}{{ title }}{% endblock %}
-
-{% block meta_keywords %}{{ tags }}{% endblock %}
 
 {% block stylesheet %}
     {{ super() }}
@@ -69,18 +66,22 @@
         background-color: #080404 !important;
     }
     #main_space{
-        margin-top: 5em !important;
+        margin-top: 4.8em !important;
     }
     .ttle{
         font-size: 3em;
+        margin-top: 1em !important;
+        margin-bottom: 1em !important;
+    }
+    .hdr{
+        background-color: #c8e4fc !important;
+        border-bottom: 1px solid black !important;
     }
 {% endblock %}
 
-{% block site_header %}{{ site_header }}{% endblock %}
-
 {% block nav_items %}
     {% if preview %}
-        <a href="" class="item" id="pub">
+        <a href="!" class="item" id="pub">
             {% if pub %}
                 UnPublish
             {% else %}
@@ -98,9 +99,9 @@
 
 {% block content %}
     <div id="main_space">
-        <div class="ui basic segment">
+        <div class="ui center aligned vertical basic segment hdr">
             <div class="ui container">
-                <h1 class="ttle">{{ self.title() }}</h1>
+                <h1 class="ttle">{{ title }}</h1>
             </div>
         </div>
         <div class="ui doubling stackable three column grid">
@@ -124,7 +125,7 @@
                 </div>
             </div>
             <div class="left aligned eight wide column" id="acontent">
-                <div class="ui container clearing basic segment">
+                <div class="ui container clearing very padded basic segment">
                     {% for seg in data.blocks %}
                         {% if seg.type == "header" %}
                                 <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
@@ -151,7 +152,7 @@
                             {{ seg.data.html|safe }}
                         {% elif seg.type == "quote" %}
                             <div class="ui small message">
-                                <p>{{ seg.data.text|safe }}</p>
+                                <p><i>{{ seg.data.text|safe }}</i></p>
                                 <h4 class="ui right aligned header">
                                     - {{ seg.data.caption|stag }}
                                 </h4>

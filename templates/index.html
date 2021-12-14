@@ -6,11 +6,11 @@
             <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     
-            <title>{% block title %}{% endblock %}</title>
+            <title>{{ title }}</title>
 
-            <meta name="title" content="{{ self.title() }}">
-            <meta name="description" content="{% block meta_desc %}//placeholder{% endblock %}">
-            <meta name="keywords" content="{% block meta_keywords %}//placeholder{% endblock %}">
+            <meta name="title" content="{{ title }}">
+            <meta name="description" content="{{ page_desc }}">
+            <meta name="keywords" content="{{ page_keywords }}">
             <meta name="language" content="English">
             <meta name="author" content="https://github.com/AsfanUlla">
 
@@ -50,7 +50,6 @@
                     padding: 0em;
                     background-color: #c8e4fc !important;
                     border-bottom: 1px solid black !important;
-                    margin-bottom: 5px !important;
                 }
                 .masthead .logo.item img {
                     margin-right: 1em;
@@ -63,8 +62,8 @@
                     border-bottom: 1px solid black !important;
                 }
                 .masthead h1.ui.header {
-                    padding-top: 3.4em;
-                    padding-bottom: 3em;
+                    padding-top: 3.3em;
+                    padding-bottom: 2.3em;
                     margin-bottom: 0em;
                     font-size: 3em;
                     font-weight: normal;
@@ -177,7 +176,7 @@
                 <div class="ui container nav">
                     <a class="ui header item" href="/">
                         <!--<img class="logo" src="">-->
-                        {% block site_header %}{% endblock %}
+                        {{ site }}
                     </a>
                     <div class="right item xo">
                         {% block nav_items %}
@@ -197,7 +196,7 @@
             <div class="ui vertical masthead center aligned segment">
                 <div class="ui text container">
                   <h1 class="ui header">
-                    {{ self.title() }}
+                    {% block hero_head %}{{ site_name }}{% endblock %}
                   </h1>
                 </div>
             </div>
@@ -220,31 +219,23 @@
                 </div>
             </div>
 
-            <div class="ui inverted vertical footer segment">
+            <div class="ui vertical inverted center aligned footer segment">
                 <div class="ui container">
-                    <div class="ui stackable inverted divided equal height stackable grid">
-                        <div class="three wide column">
-                            <a class="ui inverted header" href="/about#about">About</a>
-                            <div class="ui inverted link list">
-                                <a href="#" class="item">Sitemap</a>
-                                <a href="/about#contact" class="item">Contact Us</a>
-                            </div>
-                        </div>
-                        <!--
-                        <div class="three wide column">
-                            <h4 class="ui inverted header">Services</h4>
-                            <div class="ui inverted link list">
-                                <a href="#" class="item">Banana Pre-Order</a>
-                                <a href="#" class="item">DNA FAQ</a>
-                                <a href="#" class="item">How To Access</a>
-                                <a href="#" class="item">Favorite X-Men</a>
-                            </div>
-                        </div>
-                        -->
-                        <div class="seven wide column">
-                            <h4 class="ui inverted header">&copy; 2021 managebiz.org</h4>
-                        </div>
+                    <div class="ui inverted horizontal relaxed divided link list">
+                        <a class="item" href="/">
+                            Home
+                        </a>
+                        <a class="item" href="/about#about">
+                            About
+                        </a>
+                        <a href="#" class="item">
+                            Sitemap
+                        </a>
+                        <a href="/about#contact" class="item">
+                            Contact Us
+                        </a>
                     </div>
+                    <h4 class="ui inverted header">&copy; 2021 {{ site }}</h4>
                 </div>
             </div>
 

@@ -15,14 +15,14 @@ router = APIRouter()
 
 @router.get("/about", response_class=HTMLResponse)
 async def about_contact(request: Request):
-    html_content = dict(
-        request=request,
-        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
-        title="About/Contact",
-        page_desc="Latest technology blogs for beginners and learners"
+    return templates.TemplateResponse(
+        "components/about.html", 
+        await CommonMethods.prep_templates(
+            request=request,
+            title="About/Contact",
+            site_about=Config.SITE_ABOUT.get(request.state.site_name, Config.defaults["about"])
+        )
     )
-
-    return templates.TemplateResponse("components/about.html", html_content)
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -103,99 +103,16 @@ async def all_blogs(
     if first_id:
         prev_url =  request.state.current_host_url + "?previous_page=" + str(first_id)
 
-    html_content = dict(
-        request=request,
-        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
-        title=request.state.current_host,
-        articles=articles,
-        recent_articles=await CommonMethods.recent_articles(request),
-        next_page=next_url,
-        previous_page=prev_url,
-        page_desc="Latest technology blogs for beginners and learners",
-        featured_sites=await CommonMethods.featured_sites()
-    )
-
-    return templates.TemplateResponse("components/home.html", html_content)
-
-
-"""@router.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    query = dict(
-        is_suspended=False,
-        published=True,
-        featured=True
-    )
-    if Config.ENV != 'LOCAL':
-        query["hosts"] = request.state.current_domain
-    featured_article = await MongoInterface.find_all(
-        collection_name=collections["articles"],
-        query=query,
-        sort=[('_id', -1)],
-        list=3
-    )
-
-    if not featured_article:
-        del query['featured']
-        featured_article = await MongoInterface.find_all(
-            collection_name=collections["articles"],
-            query=query,
-            sort=[('_id', -1)],
-            list=3
+    return templates.TemplateResponse(
+        "components/home.html", 
+        await CommonMethods.prep_templates(
+            request=request,
+            articles=articles,
+            recent_articles=await CommonMethods.recent_articles(request),
+            next_page=next_url,
+            previous_page=prev_url
         )
-
-    articles = []
-    if featured_article:
-        for article in featured_article:
-            if article["published_date"]:
-                published_date = str(article["published_date"].date().isoformat()).replace('-', '.')
-
-            adata = dict(
-                title=article["title"],
-                published_date=published_date,
-                article_url=request.state.current_host_url + "/" + article["slug"],
-                tags=article["tags"]
-            )
-
-            article_text = ""
-
-            for block in article["article_data"]["blocks"]:
-                if block["type"] == "paragraph":
-                    article_text = block["data"]["text"]
-                    article_text = article_text[:240] + ' ...'
-                    break
-
-            adata["article_text"] = strip_tags(article_text)
-
-            if article["author_id"]:
-                author = await MongoInterface.find_or_none(
-                    collection_name=collections["users"],
-                    query=dict(
-                        _id=ObjectId(article["author_id"])
-                    ),
-                    exclude=dict(
-                        full_name=1,
-                        email=1,
-                        avatar=1,
-                        about=1
-                    )
-                )
-                if author:
-                    if not author.get("avatar"):
-                        author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
-                    if not author.get("about"):
-                        author["about"] = "shy"
-                    adata.update(author)
-            
-            articles.append(adata)
-
-    html_content = dict(
-        request=request,
-        site_header=request.state.current_host,
-        title=request.state.current_host,
-        page_desc="Latest technology blogs for beginners and learners",
-        featured=articles
     )
-    return templates.TemplateResponse("components/home.html", html_content)"""
 
 
 @router.get("/{article_slug}", response_class=HTMLResponse)
@@ -238,14 +155,15 @@ async def article(article_slug, request: Request):
             if not author.get("about"):
                 author["about"] = "shy" """
 
-    html_content = dict(
-        request=request,
-        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
-        title=article["title"],
-        data=article["article_data"],
-        tags=article["tags"],
-        author=author,
-        recent_articles=await CommonMethods.recent_articles(request),
-        featured_sites=await CommonMethods.featured_sites()
+    return templates.TemplateResponse(
+        "components/article.html",
+        await CommonMethods.prep_templates(
+            request=request,
+            title=article["title"],
+            data=article["article_data"],
+            page_keywords=article["tags"],
+            author=author,
+            recent_articles=await CommonMethods.recent_articles(request),
+            featured_sites=await CommonMethods.featured_sites()
+        )
     )
-    return templates.TemplateResponse("components/article.html", html_content)

@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from common.utils import verify_token, templates
 from editor.models import *
 from common.models import SchemalessResponse
-from common.views import MongoInterface, PyObjectId
+from common.views import MongoInterface, PyObjectId, CommonMethods
 from common.db import collections
 from slugify import slugify
 import datetime
@@ -12,14 +12,120 @@ import os
 import imghdr
 from config import Config
 from typing import Optional
-from bson import ObjectId
+from bson import ObjectId, objectid
 
 
 router = APIRouter()
 
+"""
+@router.post("/save_article")
+async def save_article_v2(
+    request: Request,
+    post_data: SaveArticle,
+    auth: dict = Depends(verify_token)
+):
+    if not auth[0]["is_su_admin"] and not auth[0]["is_editor"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
+    doc = None
+    if post_data.article_id is not None and objectid.ObjectId.is_valid(post_data.article_id):
+        doc = await MongoInterface.find_or_none(
+            collection_name=collections["articles"], 
+            query=dict(
+                _id=ObjectId(post_data.article_id)
+            ),
+            exclude=dict(
+                _id=1,
+                slug=1,
+                published=1
+            )    
+        )
+
+    del post_data.article_id
+
+    post_obj = jsonable_encoder(post_data)
+       
+    post_obj["author_id"]=auth[1].get("user_id")
+
+    if doc:
+        update_article = await MongoInterface.update_doc(
+            collection_name=collections["articles"],
+            query=dict(
+                _id=doc["_id"]
+            ),
+            update_data=post_obj,
+            q_type='set'
+        )
+        article_id = doc["_id"]
+        message = "article updated successfully"
+    else:
+        article_id = await MongoInterface.insert_one(
+            collection_name=collections["articles"],
+            post_obj=post_obj
+        )
+        message = "article saved successfully"
+    
+    response = SchemalessResponse(
+        data=dict(
+            success=True,
+            article_url= request.state.current_host_url + "/editor/preview?article=" + str(article_id)
+        ),
+        message=message
+    )
+    return JSONResponse(jsonable_encoder(response))
+
+
+@router.post("/pub_or_unpub")
+async def pub_or_unpub(
+    request: Request,
+    post_data: PubOrUn,
+    auth: dict = Depends(verify_token)
+):
+    if not auth[0]["is_su_admin"] and not auth[0]["is_editor"]:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
+    
+    doc = await MongoInterface.find_or_404(
+            collection_name=collections["articles"], 
+            query=dict(
+                _id=ObjectId(post_data.article_id)
+            ),
+            exclude=dict(
+                _id=1,
+                slug=1,
+                published=1,
+                title = 1
+            ),
+            error_message="Article not found"
+        )
+
+    del post_data.article_id
+    post_obj = jsonable_encoder(post_data)
+    post_obj["published_date"]=datetime.datetime.utcnow()
+    if not doc.get("slug"):
+        post_obj["slug"] = slugify(doc["title"])
+    update_article = await MongoInterface.update_doc(
+        collection_name=collections["articles"],
+        query=dict(
+            _id=doc["_id"]
+        ),
+        update_data=post_obj,
+        q_type='set'
+    )
+
+    response = SchemalessResponse(
+        data=dict(
+            success=True
+        ),
+        message="Article Updated sucessfully"
+    )
+    return JSONResponse(jsonable_encoder(response))"""
+
 
 @router.post("/save")
-async def save_article(request: Request, data: SaveArticle, payload: dict = Depends(verify_token)):
+async def save_article(
+    request: Request,
+    data: SaveArticle,
+    payload: dict = Depends(verify_token)
+    ):
     if not payload[0]["is_su_admin"] and not payload[0]["is_editor"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     article_slug = slugify(data.title)
@@ -45,7 +151,24 @@ async def save_article(request: Request, data: SaveArticle, payload: dict = Depe
             )
         )
 
+    if doc and doc.get("title"):
+        if doc.get("title").strip() != data.title.strip():
+            xdoc = await MongoInterface.find_or_none(
+                collection_name=collections["articles"],
+                query=dict(
+                    slug=slugify(data.title)
+                ),
+                exclude=dict(
+                    _id=1
+                )
+            )
+            if xdoc:
+                raise HTTPException(status.HTTP_409_CONFLICT, detail="Title already exist")
+
+
+
     del data.article_id
+    data.title = data.title.strip()
     post_obj = jsonable_encoder(data)
     article_id = None
 
@@ -133,20 +256,20 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
                 author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
             if not author.get("about"):
                 author["about"] = "shy" """
-    
-    html_content = dict(
-        request=request,
-        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
-        title=article_doc["title"],
-        data=article_doc["article_data"],
-        tags=article_doc["tags"],
-        pub=article_doc["published"],
-        author=author,
-        editor_url=request.state.current_host_url + "/editor?article=" + str(article),
-        preview=True
+        
+    return templates.TemplateResponse(
+        "components/article.html",
+        await CommonMethods.prep_templates(
+            request=request,
+            title=article_doc["title"],
+            data=article_doc["article_data"],
+            page_keywords=article_doc["tags"],
+            pub=article_doc.get("published", False),
+            author=author,
+            editor_url=request.state.current_host_url + "/editor?article=" + str(article),
+            preview=True
+        )
     )
-
-    return templates.TemplateResponse("components/article.html", html_content)
 
 
 @router.post("/upload_image")
@@ -273,18 +396,14 @@ async def editor(request: Request, article: Optional[PyObjectId] = None, payload
             del bl["_id"]
             my_blogs.append(bl)
 
-    html_content = dict(
-        request=request,
-        site_header=Config.HOST_HEADER.get(request.state.current_host, request.state.current_host),
-        title="Editor",
-        hosts=hosts,
-        article_doc=article_doc,
-        preview_url=preview_url,
-        my_blogs=my_blogs
+    return templates.TemplateResponse(
+        "components/editor.html", 
+        await CommonMethods.prep_templates(
+            request=request,
+            title="Editor",
+            hosts=hosts,
+            article_doc=article_doc,
+            preview_url=preview_url,
+            my_blogs=my_blogs
+        )
     )
-    return templates.TemplateResponse("components/editor.html", html_content)
-
-
-"""@router.delete("/delete")
-async def delete_article():
-    return {"success": True}"""

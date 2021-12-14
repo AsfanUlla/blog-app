@@ -215,7 +215,7 @@ async def redirect(request: Request, exc: RediectException):
 class CurrentHost(BaseHTTPMiddleware):
     async def __call__(self, scope, receive, send) -> None:
         request = Request(scope, receive)
-        request.state.current_host = request.base_url.hostname.strip('www.').split('.')[0].capitalize()
+        request.state.site_name = request.base_url.hostname.strip('www.').split('.')[0].capitalize()
         request.state.current_host_url = str(request.base_url).strip("/")
         request.state.current_domain = request.base_url.hostname.strip('www.')
         if Config().ENV != "LOCAL":
@@ -295,3 +295,19 @@ class CommonMethods:
             fs.append(sd)
 
         return fs
+
+    @staticmethod
+    async def prep_templates(**kwargs):
+        request = kwargs.get('request')
+        defaults = dict(
+            site=request.state.site_name,
+            site_name=Config.SITE_ALIAS.get(request.state.site_name, request.state.site_name),
+            page_desc=Config.SITE_DESC.get(request.state.site_name, Config.defaults["desc"])
+        )
+
+        if not kwargs.get("title"):
+            defaults["title"] = request.state.site_name
+        if not kwargs.get("page_keywords"):
+            defaults["page_keywords"]=Config.SITE_KEYWORDS.get(request.state.site_name, Config.defaults["keywords"])
+
+        return {**defaults, **kwargs}

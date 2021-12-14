@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from admin.models import *
 from common.models import SchemalessResponse, EmailSchema
 from fastapi.encoders import jsonable_encoder
-from common.views import MongoInterface
+from common.views import MongoInterface, CommonMethods
 from common.utils import get_password_hash, verify_password, create_access_token, verify_token, templates, send_mail
 from datetime import timedelta, datetime
 from common.db import collections
@@ -18,12 +18,13 @@ router = APIRouter()
 
 @router.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
-    html_content = dict(
-        request=request,
-        site_header=request.state.current_host,
-        title="Login"
+    return templates.TemplateResponse(
+        "components/login.html",
+        await CommonMethods.prep_templates(
+            request=request,
+            title="Login"
+        )
     )
-    return templates.TemplateResponse("components/login.html", html_content)
 
 
 @router.post('/login', response_model=SchemalessResponse)

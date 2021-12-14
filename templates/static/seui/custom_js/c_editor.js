@@ -30,16 +30,6 @@ $(document).ready(function() {
 
     var data = null;
     if (article_doc){
-        $("#title").val(article_doc['title']).prop('disabled', true);
-        $("input[name=public]").prop( "checked", article_doc['published'] );
-        if(article_doc['tags']){
-            $("#tags").val(article_doc['tags']);
-        }
-
-        $.each(article_doc['hosts'], function(i,e){
-            $(".ui.dropdown.host").find("option[value='" + e + "']").prop("selected", true);
-        });
-
         data = article_doc['article_data'];
     }
 
@@ -110,8 +100,17 @@ $(document).ready(function() {
     });
     
     editor.isReady.then(() => {
-        console.log('Editor.js is ready to work!');
         $('.ui.form.editor').removeClass('loading');
+        if (article_doc){
+            $("#title").val(article_doc['title'])
+            $("input[name=public]").prop( "checked", article_doc['published'] );
+            if(article_doc['tags']){
+                $("#tags").val(article_doc['tags']);
+            }
+            $.each(article_doc['hosts'], function(i,e){
+                $(".ui.dropdown.host").find("option[value='" + e + "']").prop("selected", true);
+            });
+        }
     }).catch((reason) => {
         $('.ui.form.editor').removeClass('loading');
         msg(false, 'Error loading Editor Contact Admin');
