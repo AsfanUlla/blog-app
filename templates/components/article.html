@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="left aligned eight wide column" id="acontent">
-                <div class="ui container clearing very padded basic segment">
+                <div class="ui container clearing basic segment" style="margin-top: 2em;">
                     {% for seg in data.blocks %}
                         {% if seg.type == "header" %}
                                 <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
