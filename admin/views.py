@@ -11,6 +11,7 @@ from starlette.requests import Request
 from bson import ObjectId
 from pydantic import EmailStr
 import urllib.parse
+from config import Config
 
 
 router = APIRouter()
@@ -196,11 +197,10 @@ async def subscribe(subs: Subs):
 async def contact(data: ContactSchema):
     subject = "Contacted By (Blog Contact Form)"
     body = "Name: " + data.name + "\nEmail: " + data.email + "\nMessage: " + data.message + "\n"
-    admin_mails = ["asfanulla@gmail.com", "ashishbishnoi18@gmail.com"]
     await send_mail(
         EmailSchema(
             sub=subject,
-            email_to=admin_mails,
+            email_to=Config.admin_mails,
             body=body
         )
     )
