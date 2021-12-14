@@ -163,7 +163,6 @@ async def article(article_slug, request: Request):
             data=article["article_data"],
             page_keywords=article["tags"],
             author=author,
-            recent_articles=await CommonMethods.recent_articles(request),
-            featured_sites=await CommonMethods.featured_sites()
+            recent_articles=await CommonMethods.recent_articles(request)
         )
     )
