@@ -152,10 +152,12 @@
                             {{ seg.data.html|safe }}
                         {% elif seg.type == "quote" %}
                             <div class="ui small message">
-                                <p><i>{{ seg.data.text|safe }}</i></p>
-                                <h4 class="ui right aligned header">
-                                    - {{ seg.data.caption|stag }}
-                                </h4>
+                                <i style="font-size: 16px;">{{ seg.data.text|safe }}</i>
+                                {% if seg.data.caption|stag != None and seg.data.caption|stag != '' %}
+                                    <h4 class="ui right aligned header" style="margin-top: 10px;">
+                                        - {{ seg.data.caption|stag }}
+                                    </h4>
+                                {% endif %}
                             </div>
                         {% elif seg.type == "image" %}
                             <div class="ui basic segment bl">
