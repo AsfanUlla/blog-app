@@ -35,22 +35,11 @@ $(document).ready(function() {
         if($('.ui.form.login').form('is valid')){
 	        const data = new FormData($('.ui.form.login')[0]);
 	        const value = Object.fromEntries(data.entries());
-            function l_c(e){
-                if (this.readyState === 4){
-                    response = JSON.parse(this.response);
-                    if (this.status < 299){
-                        if(response.data.success){
-                            window.location.replace(c_host + "/editor");
-                        }
-                    } else if(this.status >= 400 && this.status < 499){
-                        alert(response.detail);
-                    } else {
-                        alert("Internal server error");
-                    }
-                }
+            function l_c(response){
+                window.location.replace(c_host + "/editor");
             }
 
-	        request("/admin/login", 'POST', value, l_c);
+	        request("/admin/login", 'POST', value, l_c, "#login_s", true);
     	}
 	});
 });

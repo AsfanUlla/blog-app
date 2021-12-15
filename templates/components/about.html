@@ -85,23 +85,13 @@
                 e.preventDefault();
                 $(this).form('validate form');
                 if($(this).form('is valid')){
-                    $(this).addClass('disabled loading');
+
                     const data = new FormData($(this)[0]);
                     const value = Object.fromEntries(data.entries());
                     function c_c(e){
-                        if (this.readyState === 4){
-                            response = JSON.parse(this.response);
-                            if (this.status < 299){
-                                msg(response.data["success"], response["message"]);
-                            } else if(this.status >= 400 && this.status < 499){
-                                msg(false, response.detail);
-                            } else {
-                                msg(false, "Internal server error");
-                            }
-                        }
-                        $('.ui.form.contact').removeClass('disabled loading');
+                        $('.ui.form.contact')[0].reset();
                     }
-                    request("/admin/contact", 'POST', value, c_c);
+                    request("/admin/contact", 'POST', value, c_c, '.ui.form.contact');
                 }
             });
 

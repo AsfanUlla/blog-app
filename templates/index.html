@@ -288,25 +288,12 @@
                         e.preventDefault();
                         $(".ui.form.subs").form('validate form');
                         if($(".ui.form.subs").form('is valid')){
-                            $(this).addClass('disabled loading');
                             const data = new FormData($(".ui.form.subs")[0]);
                             const value = Object.fromEntries(data.entries());                        
-
                             function s_c(e){
-                                if (this.readyState === 4){
-                                    response = JSON.parse(this.response);
-                                    if (this.status < 299){
-                                        msg(response.data["success"], response["message"]);
-                                    } else if(this.status >= 400 && this.status < 499){
-                                        msg(false, response.detail);
-                                    } else {
-                                        msg(false, "Internal server error");
-                                    }
-                                }
-                                $(".button.subs").removeClass('disabled loading');
+                                $(".ui.form.subs")[0].reset();
                             }
-
-                            request("/admin/subscribe", 'POST', value, s_c);
+                            request("/admin/subscribe", 'POST', value, s_c, ".button.subs");
 
                         }
                     })

@@ -4,26 +4,73 @@ if (window.location.port > 0){
 }
 var c_host = window.location.protocol + "//" + window.location.hostname + port;
 
-function request(url, typ, data, callback){
+function request(url, typ, data, callback, ele=null, return_message=false){
+
+    if(ele != null){
+        $(ele).addClass('disabled loading');
+    }
+
     var request = new XMLHttpRequest();
-    request.addEventListener("load", callback);
-    request.addEventListener("error", callback);
+    request.addEventListener("progress", progress);
+    request.addEventListener("load", load_error);
+    request.addEventListener("error", load_error);
+    request.addEventListener("abort", abort);
+    request.addEventListener("timeout", timeout);
     request.open(typ, c_host + url);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(data));
 
     var req = null;
 
-    /*
-    function succ(evt) {
-        req = JSON.parse(this.responseText);
+    
+    function progress(evt) {
+        //req = JSON.parse(this.responseText);
+        if(ele != null){
+            $(ele).addClass('disabled loading');
+        }
     }
 
-    function err(evt) {
-        req = JSON.parse(this.responseText);
+    function abort(evt) {
+        //req = JSON.parse(this.responseText);
+        msg(mbdy="Request Aborted");
+        if(ele != null){
+            $(ele).removeClass('disabled loading');
+        }
     }
-    */
 
+    function timeout(evt) {
+        //req = JSON.parse(this.responseText);
+        msg(mbdy="Request Timeout");
+        if(ele != null){
+            $(ele).removeClass('disabled loading');
+        }
+    }
+
+    function load_error(e){
+        if(ele != null){
+            $(ele).removeClass('disabled loading');
+        }
+        if (this.readyState === 4){
+            if(this.status > 0){
+                response = JSON.parse(this.response);
+                if (this.status < 299){
+                    if(response.data["success"]){
+                        callback(response);
+                    }
+                    if(return_message === false){
+                        msg(response.data["success"], response.message);
+                    }
+                } else if(this.status >= 400 && this.status < 499){
+                    msg(false, response.detail);
+                } else {
+                    msg(false, "Internal server error");
+                }
+            } else{
+                msg(false, "Check your Network and try again");
+            }
+        }
+    }
+    
 }
 
 function getParameterByName(name, url) {

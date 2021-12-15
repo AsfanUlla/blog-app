@@ -147,7 +147,6 @@ $(document).ready(function() {
 
         editor.save().then((outputData) => {
             if(outputData.blocks.length > 0){
-                $('.ui.form.editor').addClass('loading');
 
                 value = {
                     "title": $("#title").val(),
@@ -161,35 +160,23 @@ $(document).ready(function() {
                     value["tags"] = $("#tags").val();
                 }
 
-                function r_c(e){
-                    if (this.readyState === 4){
-                        response = JSON.parse(this.response);
-                        if (this.status < 299){
-                            if(response.data["success"]){
-                                if(pub){
-                                    window.location.href = response.data["article_url"];
-                                }else{
-                                    $("#e_publish").attr("href", response.data["article_url"]);
-                                    article_id = getParameterByName('article', response.data["article_url"]);
-                                    history.replaceState(response, document.title, "?article="+article_id);
-                                }
-                            }
-                            msg(response.data["success"], response.message);
-                        } else if(this.status >= 400 && this.status < 499){
-                            msg(false, response.detail);
-                        } else {
-                            msg(false, "Internal server error");
-                        }
+                function r_c(response){
+                    if(pub){
+                        window.location.href = response.data["article_url"];
+                    }else{
+                        $("#e_publish").attr("href", response.data["article_url"]);
+                        article_id = getParameterByName('article', response.data["article_url"]);
+                        history.replaceState(response, document.title, "?article="+article_id);
                     }
-                    $('.ui.form.editor').removeClass('loading');
                 }
-                request("/editor/save", 'POST', value, r_c);
+                request("/editor/save", 'POST', value, r_c, '.ui.form.editor');
 
             } else{
                 msg(false, "Empty editor");
             }
         }).catch((error) => {
             console.log('Saving failed: ', error);
+            msg(false, "Failed to Save");
         });
 
     }

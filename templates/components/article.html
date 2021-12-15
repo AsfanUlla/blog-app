@@ -89,7 +89,7 @@
             {% endif %}
         </a>
         <a href="{{ editor_url }}" class="item">Editor</a>
-        <a href="" class="item" id="discard">Discard</a>
+        <a href="!" class="item" id="discard">Discard</a>
     {% else %}
         {{ super() }}
     {% endif %}
@@ -331,27 +331,16 @@
                             "edit": true,
                             "article_id": article_id
                         }
-                function r_c(e){
-                    if (this.readyState === 4){
-                        response = JSON.parse(this.response);
-                        if (this.status < 299){
-                            if(response.data["success"]){
-                                if($("a#pub").html().trim() == "Publish"){
-                                    $("a#pub").html("UnPublish");
-                                    msg(true, "Article Published");
-                                }else{
-                                    $("a#pub").html("Publish");
-                                    msg(true, "Article Unpublished");
-                                }
-                            }
-                        } else if(this.status >= 400 && this.status < 499){
-                            msg(false, response.detail);
-                        } else {
-                            msg(false, "Internal server error");
-                        }
+                function r_c(response){
+                    if($("a#pub").html().trim() == "Publish"){
+                        $("a#pub").html("UnPublish");
+                        msg(true, "Article Published");
+                    }else{
+                        $("a#pub").html("Publish");
+                        msg(true, "Article Unpublished");
                     }
                 }
-                request("/editor/save", 'POST', value, r_c);
+                request("/editor/save", 'POST', value, r_c, null, true);
             });
         
             $("a#discard").click(function(e){
@@ -360,22 +349,8 @@
                     value = {
                         "article_id": article_id
                     }
-                    function d_c(e){
-                        if (this.readyState === 4){
-                            response = JSON.parse(this.response);
-                            if (this.status < 299){
-                                if(response.data["success"]){
-                                    msg(true, response.message);
-                                    window.location.replace(response.data["redirect_url"]);
-                                } else{
-                                    msg(false, response.message);
-                                }
-                            } else if(this.status >= 400 && this.status < 499){
-                                msg(false, response.detail);
-                            } else {
-                                msg(false, "Internal server error");
-                            }
-                        }
+                    function d_c(response){
+                        window.location.replace(response.data["redirect_url"]);
                     }
                     request("/editor/discard", 'POST', value, d_c);
                 }
