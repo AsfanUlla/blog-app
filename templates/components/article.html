@@ -1,5 +1,10 @@
 {% extends "index.html" %}
 
+{% block head %}
+    {{ super() }}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7520246006793961" crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block stylesheet %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/image.min.css">
