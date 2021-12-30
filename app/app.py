@@ -45,9 +45,9 @@ async def get_robots_txt():
     return  os.getcwd() + "/templates/robots.txt"
 
 # Propeller SW.JS
-@app.get("/sw.js", response_class=FileResponse)
-async def propeller_sw():
-    return  os.getcwd() + "/sw.js"
+# @app.get("/sw.js", response_class=FileResponse)
+# async def propeller_sw():
+#     return  os.getcwd() + "/sw.js"
 
 @app.get("/openapi.json")
 async def get_open_api_endpoint(payload: dict = Depends(verify_token)):
