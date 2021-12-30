@@ -83,7 +83,7 @@
         background-color: #c8e4fc !important;
         border-bottom: 1px solid black !important;
     }
-    li {
+    .mali {
         font-size: 1.2em !important;
         margin-bottom: 18px;
     }
@@ -114,7 +114,7 @@
                 <h1 class="ttle">{{ title }}</h1>
             </div>
         </div>
-        <div class="ui doubling stackable three column grid">
+        <div class="ui doubling stackable three column grid" style="margin-top: 1em;">
             <div class="left floated left aligned four wide column">
                 <div class="ui sticky ta">
                     <div class="ui basic segment">
@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="left aligned eight wide column" id="acontent">
-                <div class="ui container clearing basic segment" style="margin-top: 2em;">
+                <div class="ui container clearing basic segment">
                     {% for seg in data.blocks %}
                         {% if seg.type == "header" %}
                                 <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
@@ -195,7 +195,7 @@
                             {% else %}
                                 {% set ls = "ul" %}
                             {% endif %}
-                            <{{ ls }} class="ui list">
+                            <{{ ls }} class="ui list mali">
                                 {% for li in seg.data['items'] %}
                                     <li>{{ li|safe }}</li>
                                 {% endfor %}
@@ -238,7 +238,7 @@
             </div>
             <div class="right floated left aligned four wide column">
                 {% if tags %}
-                    <div class="ui secondary segment" style="margin: auto 15px auto 15px;">
+                    <div class="ui secondary segment" style="margin: 15px 15px auto 15px;">
                         <div class="ui horizontal list" >
                             {% for tag in tags.split(',') %}
                                 <div class="item">

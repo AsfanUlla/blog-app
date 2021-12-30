@@ -162,6 +162,7 @@ async def article(article_slug, request: Request):
             title=article["title"],
             data=article["article_data"],
             page_keywords=article["tags"],
+            tags=article["tags"],
             author=author,
             recent_articles=await CommonMethods.recent_articles(request)
         )
