@@ -106,7 +106,7 @@ async def verify_token(request: Request):
             error_message="Illegal token"
         )
     except JWTError:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Illegal token")
+        raise RediectException(path="/admin/login", status_code=status.HTTP_302_FOUND)
     return user, payload
 
 
