@@ -313,7 +313,7 @@
                         fields: {
                             email: ['email', 'empty']
                         },
-                        on     : 'blur'
+                        on: 'blur'
                     });
 
                     $(".button.subs").click(function(e){
@@ -326,9 +326,8 @@
                                 $(".ui.form.subs")[0].reset();
                             }
                             request("/admin/subscribe", 'POST', value, s_c, ".button.subs");
-
                         }
-                    })
+                    });
                 });
             </script>
             <!-- Propeller -->
