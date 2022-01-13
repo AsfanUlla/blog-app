@@ -4,7 +4,7 @@ if (window.location.port > 0){
 }
 var c_host = window.location.protocol + "//" + window.location.hostname + port;
 
-function request(url, typ, data, callback, ele=null, return_message=false){
+function request(url, typ, data, callback, ele=null, return_message=false, show_msg=true){
 
     if(ele != null){
         $(ele).addClass('disabled loading');
@@ -32,7 +32,9 @@ function request(url, typ, data, callback, ele=null, return_message=false){
 
     function abort(evt) {
         //req = JSON.parse(this.responseText);
-        msg(mbdy="Request Aborted");
+        if(show_msg){
+            msg(mbdy="Request Aborted");
+        }
         if(ele != null){
             $(ele).removeClass('disabled loading');
         }
@@ -40,7 +42,9 @@ function request(url, typ, data, callback, ele=null, return_message=false){
 
     function timeout(evt) {
         //req = JSON.parse(this.responseText);
-        msg(mbdy="Request Timeout");
+        if(show_msg){
+            msg(mbdy="Request Timeout");
+        }
         if(ele != null){
             $(ele).removeClass('disabled loading');
         }
@@ -58,15 +62,23 @@ function request(url, typ, data, callback, ele=null, return_message=false){
                         callback(response);
                     }
                     if(return_message === false){
-                        msg(response.data["success"], response.message);
+                        if(show_msg){
+                            msg(response.data["success"], response.message);
+                        }
                     }
                 } else if(this.status >= 400 && this.status < 499){
-                    msg(false, response.detail);
+                    if(show_msg){
+                        msg(false, response.detail);
+                    }
                 } else {
-                    msg(false, "Internal server error");
+                    if(show_msg){
+                        msg(false, "Internal server error");
+                    }
                 }
             } else{
-                msg(false, "Check your Network and try again");
+                if(show_msg){
+                    msg(false, "Check your Network and try again");
+                }
             }
         }
     }

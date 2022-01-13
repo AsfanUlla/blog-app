@@ -96,7 +96,10 @@ $(document).ready(function() {
             },
             embed: Embed,
         },
-        data: data
+        data: data,
+        onChange: (api, event) => {
+            auto_save();
+        }
     });
     
     editor.isReady.then(() => {
@@ -134,8 +137,18 @@ $(document).ready(function() {
         }
     });
 
+    let previous_time = 0;
+    function auto_save(){
+        const d = new Date();
+        let current_time = d.getTime();
+        var diff = current_time - previous_time;
+        if (diff > 10000){
+            save(pub=false, auto=true);
+            previous_time = d.getTime();
+        }
+    }
 
-    function save(pub=false){
+    function save(pub=false, auto=false){
         var article_id = null;
         var edit = false;
 
@@ -143,6 +156,13 @@ $(document).ready(function() {
         article_id = getParameterByName('article', aurl);
         if (article_id && article_id != ""){
             edit = true;
+        }
+
+        show_msg = true;
+        ele='.ui.form.editor'
+        if(auto){
+            show_msg = false;
+            ele=null
         }
 
         editor.save().then((outputData) => {
@@ -169,14 +189,18 @@ $(document).ready(function() {
                         history.replaceState(response, document.title, "?article="+article_id);
                     }
                 }
-                request("/editor/save", 'POST', value, r_c, '.ui.form.editor');
+                request("/editor/save", 'POST', value, r_c, ele, false, show_msg);
 
             } else{
-                msg(false, "Empty editor");
+                if(!auto){
+                    msg(false, "Empty editor");
+                }
             }
         }).catch((error) => {
             console.log('Saving failed: ', error);
-            msg(false, "Failed to Save");
+            if(!auto){
+                msg(false, "Failed to Save");
+            }
         });
 
     }
