@@ -162,7 +162,7 @@ $(document).ready(function() {
         ele='.ui.form.editor'
         if(auto){
             show_msg = false;
-            ele=null
+            ele='#e_save'
         }
 
         editor.save().then((outputData) => {
