@@ -135,6 +135,10 @@ async def article(article_slug, request: Request):
         error_message="Article not found"
     )
 
+    published_date = None
+    if article.get("published_date"):
+        published_date = article["published_date"].date().isoformat()
+
     author = None
     if article.get("author_id"):
         author = await MongoInterface.find_or_none(
@@ -164,6 +168,7 @@ async def article(article_slug, request: Request):
             page_keywords=article["tags"],
             tags=article["tags"],
             author=author,
+            published_date=published_date,
             recent_articles=await CommonMethods.recent_articles(request)
         )
     )
