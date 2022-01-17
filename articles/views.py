@@ -136,7 +136,7 @@ async def article(article_slug, request: Request):
     )
 
     author = None
-    """if article.get("author_id"):
+    if article.get("author_id"):
         author = await MongoInterface.find_or_none(
             collection_name=collections["users"],
             query=dict(
@@ -146,14 +146,14 @@ async def article(article_slug, request: Request):
                 full_name=1,
                 email=1,
                 avatar=1,
-                about=1
+                about=1,
+                social=1
             )
         )
         if author:
-            if not author.get("avatar"):
-                author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
-            if not author.get("about"):
-                author["about"] = "shy" """
+            author["avatar"] = author.get("avatar", request.state.current_host_url+"/static/assets/img/default_avatar.jpg")
+            author["about"] = author.get("about", None)
+            author["social"] = author.get("social", {})
 
     return templates.TemplateResponse(
         "components/article.html",
