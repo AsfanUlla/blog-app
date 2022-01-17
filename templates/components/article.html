@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/table.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/embed.min.css">
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/sticky.min.css">
-    
+    <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/components/popup.min.css">    
     <link rel="stylesheet" type="text/css" href="{{ request.base_url }}static/seui/highlight/styles/base16/black-metal-dark-funeral.min.css">    
 
 {% endblock %}
@@ -119,24 +119,26 @@
                 <h1 class="ttle">{{ title }}</h1>
             </div>
         </div>
+        <div class="ui bottom attached header">
+            <div class="ui container">
+                <div class="ui  horizontal relaxed divided list">
+                    {% if author %}
+                        <div class="item">
+                            <img class="ui avatar image" src="{{ author.avatar }}">
+                            <span>{{ author.full_name }}</span>
+                        {% for key, value in author.social.items() %}
+                            <a target="_blank" href="{{ value }}" data-tooltip="{{ key }}" data-inverted=""><i class="black {{ key }} icon"></i></a>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if published_date %}
+                        <div class="item">{{ published_date }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         <div class="ui doubling stackable three column grid" style="margin-top: 1em;">
             <div class="left floated left aligned four wide column">
-                {% if author %}
-                <div class="ui basic segment">
-                    <div class="ui message">
-                        <img class="ui tiny avatar image" src="{{ author.avatar }}">
-                        <span style="font-size: 1.2em;">{{ author.full_name }}</span>
-                        <div class="author_sub">
-                            <div class="ui mini icon buttons">
-                                <a class="ui red basic button" target="_blank" href="mailto:{{ author.email }}"><i class="large envelope icon"></i></a>
-                                {% for key, value in author.social.items() %}
-                                    <a class="ui blue basic button" target="_blank" href="{{ value }}"><i class="large {{ key }} icon"></i></a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
                 <div class="ui sticky ta">
                     <div class="ui basic segment">
                         <div class="ui info message">
@@ -147,7 +149,7 @@
                             <ul class="list">
                                 {% for teg in data.blocks %}
                                     {% if teg.type == "header" %}
-                                        <li><a href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
+                                        <li><a class="aul" href="#{{ teg.data.text|jslug }}">{{ teg.data.text }}</a></li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -160,7 +162,7 @@
                     {% for seg in data.blocks %}
                         {% if seg.type == "header" %}
                                 <h{{ seg.data.level }} class="ui header ch" id="{{ seg.data.text|jslug }}">{{ seg.data.text }}
-                                <a class="header_link" href="#{{ seg.data.text|jslug }}">
+                                <a class="header_link" href="#{{ seg.data.text|jslug }}" data-tooltip="Copy link" data-inverted="">
                                     &nbsp;<i class="linkify icon"></i>
                                 </a>
                                 </h{{ seg.data.level }}>
@@ -281,7 +283,7 @@
                         </div>
                         <ul class="list">
                             {% for raticle in recent_articles %}
-                                <li><a href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
+                                <li><a class="aul" href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -295,7 +297,7 @@
                         </div>
                         <ul class="list">
                             {% for site in featured_sites %}
-                                <li><a href="{{ site.url }}">{{ site.name }}</a></li>
+                                <li><a class="aul" href="{{ site.url }}">{{ site.name }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -310,7 +312,7 @@
 {{ super() }}
     <script src="{{ request.base_url }}static/seui/components/embed.min.js"></script>
     <script src="{{ request.base_url }}static/seui/components/sticky.min.js"></script>
-
+    <script src="{{ request.base_url }}static/seui/components/popup.min.js"></script>
     <script src="{{ request.base_url }}static/seui/highlight/highlight.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -331,6 +333,8 @@
                     $('.ui.sticky.ta').sticky('destroy');
                 }
             });
+            
+            $('.activating.element').popup();
 
             $('.header_link').click(function(e){
                 e.preventDefault();

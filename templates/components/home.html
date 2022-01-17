@@ -52,12 +52,12 @@
                     <h1 class="ui header hh">{{ article.title }}</h1>
                     <div class="ui top right attached label date">{{ article.published_date }}</div>
                     <p class="article_text">{{ article.article_text|stag }}</p>
-                    <a class="more" href="{{ article.article_url }}">Read More <i class="small angle double right icon"></i></a>
+                    <a class="aul more" href="{{ article.article_url }}">Read More <i class="small angle double right icon"></i></a>
                 </div>
                 <div class="ui divider"></div>
             {% endfor %}
             {% else %}
-                <p class="article_text">No Results Found</p>
+                <p class="article_text">No Articles Found</p>
             {% endif %}
         </div>
         <div class="right floated left aligned five wide column">
@@ -69,7 +69,7 @@
                     </div>
                     <ul class="list">
                         {% for raticle in recent_articles %}
-                            <li><a href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
+                            <li><a class="aul" href="/{{ raticle.slug }}">{{ raticle.title }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -83,7 +83,7 @@
                     </div>
                     <ul class="list">
                         {% for site in featured_sites %}
-                            <li><a href="{{ site.url }}">{{ site.name }}</a></li>
+                            <li><a class="aul" href="{{ site.url }}">{{ site.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -93,12 +93,12 @@
         <div class="doubling ten wide column">
             <div class="ui basic clearing right floated segment pg">
                 {% if next_page %}
-                    <a href="{{ next_page }}">Next Page<i class="angle right icon"></i></a>
+                    <a class="aul" href="{{ next_page }}">Next Page<i class="angle right icon"></i></a>
                 {% endif %}
             </div>
             <div class="ui basic clearing left floated segment pg">
                 {% if previous_page %}
-                    <a href="{{ previous_page }}"><i class="angle left icon"></i>Previous Page</a>
+                    <a class="aul" href="{{ previous_page }}"><i class="angle left icon"></i>Previous Page</a>
                 {% endif %}
             </div>
         </div>
