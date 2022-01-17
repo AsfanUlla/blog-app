@@ -237,8 +237,12 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
         error_message="Article not found"
     )
 
+    published_date = None
+    if article_doc.get("published_date"):
+        published_date = article_doc["published_date"].date().isoformat()
+
     author = None
-    """if article_doc.get("author_id"):
+    if article_doc.get("author_id"):
         author = await MongoInterface.find_or_none(
             collection_name=collections["users"],
             query=dict(
@@ -248,14 +252,14 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
                 full_name=1,
                 email=1,
                 avatar=1,
-                about=1
+                about=1,
+                social=1
             )
         )
         if author:
-            if not author.get("avatar"):
-                author["avatar"] = request.state.current_host_url+"/static/assets/img/default_avatar.jpg"
-            if not author.get("about"):
-                author["about"] = "shy" """
+            author["avatar"] = author.get("avatar", request.state.current_host_url+"/static/assets/img/default_avatar.jpg")
+            author["about"] = author.get("about", None)
+            author["social"] = author.get("social", {})
         
     return templates.TemplateResponse(
         "components/article.html",
@@ -266,6 +270,7 @@ async def preview_article(request: Request, article: PyObjectId, payload: dict =
             page_keywords=article_doc["tags"],
             pub=article_doc.get("published", False),
             author=author,
+            published_date=published_date,
             editor_url=request.state.current_host_url + "/editor?article=" + str(article),
             preview=True
         )
