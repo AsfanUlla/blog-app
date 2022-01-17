@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, HttpUrl
 from common.views import PyObjectId
+from typing import Dict
 
 
 class AddUserSchema(BaseModel):
@@ -10,6 +11,7 @@ class AddUserSchema(BaseModel):
     is_editor: bool = False
     is_su_admin: bool =False
     is_diabled: bool = False
+    social: Dict[str, HttpUrl] = {}
 
 
 class UserLoginSchema(BaseModel):
