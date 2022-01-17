@@ -87,6 +87,11 @@
         font-size: 1.2em !important;
         margin-bottom: 18px;
     }
+    .author_sub{
+        margin-top: -10px;
+        margin-left: 6em;
+        margin-bottom: 10px;
+    }
 {% endblock %}
 
 {% block nav_items %}
@@ -116,6 +121,22 @@
         </div>
         <div class="ui doubling stackable three column grid" style="margin-top: 1em;">
             <div class="left floated left aligned four wide column">
+                {% if author %}
+                <div class="ui basic segment">
+                    <div class="ui message">
+                        <img class="ui tiny avatar image" src="{{ author.avatar }}">
+                        <span style="font-size: 1.5em;">{{ author.full_name }}</span>
+                        <div class="author_sub">
+                            <div class="ui mini icon buttons">
+                                <a class="ui red basic button" target="_blank" href="mailto:{{ author.email }}"><i class="large envelope icon"></i></a>
+                                {% for key, value in author.social.items() %}
+                                    <a class="ui blue basic button" target="_blank" href="{{ value }}"><i class="large {{ key }} icon"></i></a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="ui sticky ta">
                     <div class="ui basic segment">
                         <div class="ui info message">
