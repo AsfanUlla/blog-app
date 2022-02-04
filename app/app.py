@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from common.utils import verify_token
@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.gzip import GZipMiddleware
 #from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 import os
+from os.path import exists as file_exists
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -60,6 +61,13 @@ async def get_documentation(payload: dict = Depends(verify_token)):
     if not payload[0]["is_su_admin"]:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized user")
     return get_swagger_ui_html(openapi_url="/openapi.json", title="blog-docs")
+
+@app.get("/.well-known/{file_name}", response_class=FileResponse)
+async def get_well_known_file(file_name: str):
+    file_path = os.getcwd() + "/.well-known/" + file_name
+    if file_exists(file_path):
+        return file_path
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not Found")
 
 app.include_router(editor_router, tags=["editor"], prefix="/editor", dependencies=[Depends(verify_token)])
 app.include_router(admin_router, tags=["admin"], prefix="/admin")
