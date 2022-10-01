@@ -1,4 +1,0 @@
-This is a Brave Rewards publisher verification file.
-
-Domain: managebiz.org
-Token: c0e4254ac17091075c288c2c68bec72287d6dbcda2d40dc3d5874d35de67b593
